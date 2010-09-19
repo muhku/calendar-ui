@@ -5,7 +5,7 @@ The current version includes the following views:
 
 h3. MAWeekView
 
-!http://www.muhonen.net/project/CalendarUI/weekview.png!
+![](http://www.muhonen.net/project/CalendarUI/weekview.png)
 
 A weekly view for viewing events, displays a whole week. Navigation using the arrows on
 the top of the view or using the swipe gesture. It has two delegates: MAWeekViewDataSource and
