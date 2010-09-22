@@ -75,7 +75,6 @@
 	} else {
 		_cellHeight = 0;
 	}
-
 }
 
 - (void)setColumns:(unsigned int)columns {

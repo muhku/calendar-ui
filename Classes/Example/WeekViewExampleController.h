@@ -26,12 +26,9 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "MAWeekView.h" // For the MAWeekViewDataSource protocol
-
-@class MAWeekView;
+#import "MAWeekView.h" // MAWeekViewDataSource,MAWeekViewDelegate
 
 @interface WeekViewExampleController : UIViewController<MAWeekViewDataSource,MAWeekViewDelegate> {
-	MAWeekView *_weekView;
 }
 
 @end
