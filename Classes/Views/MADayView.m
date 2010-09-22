@@ -34,7 +34,7 @@
 static const unsigned int HOURS_IN_DAY                   = 25; // Beginning and end of day is include twice
 static const unsigned int MINUTES_IN_HOUR                = 60;
 static const unsigned int SPACE_BETWEEN_HOUR_LABELS      = 3;
-static const unsigned int DEFAULT_LABEL_FONT_SIZE        = 10;
+static const unsigned int DEFAULT_LABEL_FONT_SIZE        = 12;
 static const unsigned int ALL_DAY_VIEW_EMPTY_SPACE       = 3;
 
 static NSString *TOP_BACKGROUND_IMAGE                    = @"ma_topBackground.png";
@@ -256,7 +256,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 		_allDayGridView = [[MA_AllDayGridView alloc] initWithFrame:rect];
 		_allDayGridView.backgroundColor = [UIColor whiteColor];
 		_allDayGridView.dayView = self;
-		_allDayGridView.textFont = self.regularFont;
+		_allDayGridView.textFont = self.boldFont;
 		_allDayGridView.eventHeight = [@"FOO" sizeWithFont:self.regularFont].height * 2.f;
 	}
 	return _allDayGridView;
@@ -561,7 +561,7 @@ static NSString const * const HOURS_24[] = {
 	eventView.event = event;
 	eventView.backgroundColor = event.backgroundColor;
 	eventView.title = event.title;
-	eventView.textFont = self.dayView.regularFont;
+	eventView.textFont = self.dayView.boldFont;
 	eventView.textColor = event.textColor;
 	
 	[self addSubview:eventView], [eventView release];
