@@ -39,6 +39,14 @@ MAWeekViewDataSource and MAWeekViewDelegate protocols. This example loads the vi
 from a NIB and if you plan to create the views without a NIB, you need to provide
 a CGRect (initWithFrame) for MAWeekView.
 
+MADayView
+---------------------
+
+MADayView is a daily view for displaying events. Please see the MADayViewDataSource and
+MADayViewDelegate protocols for further details.
+
+![](http://www.muhonen.net/project/CalendarUI/dayview.png)
+
 Using the classes in your own project
 ====================
 
