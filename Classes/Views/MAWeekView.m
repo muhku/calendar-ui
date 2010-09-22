@@ -108,14 +108,20 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	int _eventsInOffset[7];
 	unsigned int _maxEvents;
 	NSDate *_week;
+	UIFont *_textFont;
 }
 
 @property (nonatomic, retain) MAWeekView *weekView;
+@property (nonatomic, retain) UIFont *textFont;
 @property (nonatomic,copy) NSDate *week;
 
-- (CGRect)addEventToOffset:(unsigned int)offset;
+- (void)addEventToOffset:(unsigned int)offset event:(MAEvent *)event;
 - (void)resetCachedData;
 
+@end
+
+@interface MAGridView (MAWeekViewAdditions)
+- (void)addEventToOffset:(unsigned int)offset event:(MAEvent *)event weekView:(MAWeekView *)weekView;
 @end
 
 @interface MAWeekView (PrivateMethods)
@@ -277,6 +283,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 		_allDayEventView = [[MAEventGridView alloc] initWithFrame:rect];
 		_allDayEventView.backgroundColor = [UIColor whiteColor];
 		_allDayEventView.weekView = self;
+		_allDayEventView.textFont = self.regularFont;
 	}
 	return _allDayEventView;
 }
@@ -411,25 +418,11 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 			MAEvent *event = e;
 			event.displayDate = weekday;
 			
-			MAEventView *eventView;
-			
 			if (event.allDay) {
-				eventView = [[MAEventView alloc] initWithFrame:[self.allDayEventView addEventToOffset:d]];
-				[self.allDayEventView addSubview:eventView], [eventView release];
+				[self.allDayEventView addEventToOffset:d event:event];
 			} else {
-				eventView = [[MAEventView alloc] initWithFrame:CGRectMake(self.gridView.cellWidth * d,
-																		  self.gridView.cellHeight / MINUTES_IN_HOUR * [event minutesSinceMidnight],
-																		  self.gridView.cellWidth,
-																		  self.gridView.cellHeight / MINUTES_IN_HOUR * [event durationInMinutes])];
-				[self.gridView addSubview:eventView], [eventView release];
+				[self.gridView addEventToOffset:d event:event weekView:self];
 			}
-
-			eventView.weekView = self;
-			eventView.event = event;
-			eventView.backgroundColor = event.backgroundColor;
-			eventView.title = event.title;
-			eventView.textFont = self.regularFont;
-			eventView.textColor = event.textColor;
 		}
 		d++;
 	}
@@ -555,6 +548,25 @@ static NSString const * const HOURS_24[] = {
 
 @end
 
+@implementation MAGridView (MAWeekViewAdditions)
+
+- (void)addEventToOffset:(unsigned int)offset event:(MAEvent *)event weekView:(MAWeekView *)weekView {
+	MAEventView *eventView = [[MAEventView alloc] initWithFrame:CGRectMake(self.cellWidth * offset,
+																		   self.cellHeight / MINUTES_IN_HOUR * [event minutesSinceMidnight],
+																		   self.cellWidth,
+																		   self.cellHeight / MINUTES_IN_HOUR * [event durationInMinutes])];
+	eventView.weekView = weekView;
+	eventView.event = event;
+	eventView.backgroundColor = event.backgroundColor;
+	eventView.title = event.title;
+	eventView.textFont = weekView.regularFont;
+	eventView.textColor = event.textColor;
+	
+	[self addSubview:eventView], [eventView release];
+}
+
+@end
+
 @implementation MAWeekdayView
 
 @synthesize weekView=_weekView;
@@ -652,10 +664,12 @@ static NSString const * const HOURS_24[] = {
 @implementation MAEventGridView
 
 @synthesize weekView=_weekView;
+@synthesize textFont=_textFont;
 
 - (void)dealloc {
 	[_week release], _week = nil;
 	self.weekView = nil;
+	self.textFont = nil;
 	[super dealloc];
 }
 
@@ -704,13 +718,21 @@ static NSString const * const HOURS_24[] = {
 													  CGRectGetHeight(self.bounds) + CGRectGetHeight(self.weekView.hourView.bounds));	
 }
 
-- (CGRect)addEventToOffset:(unsigned int)offset {
-	const CGFloat eventWidth = self.weekView.gridView.cellHeight;
-	const CGFloat eventHeight = self.weekView.gridView.cellWidth;
-
-	CGRect rect = CGRectMake(self.weekView.gridView.cellWidth * offset,
-							 ALL_DAY_VIEW_EMPTY_SPACE + (ALL_DAY_VIEW_EMPTY_SPACE + eventHeight) * _eventsInOffset[offset],
-							 eventWidth, eventHeight);
+- (void)addEventToOffset:(unsigned int)offset event:(MAEvent *)event {
+	const CGFloat eventWidth = self.weekView.gridView.cellWidth * 0.95;
+	const CGFloat eventHeight = self.weekView.gridView.cellHeight;
+	
+	MAEventView *eventView = [[MAEventView alloc] initWithFrame:CGRectMake(self.weekView.gridView.cellWidth * offset,
+																		   ALL_DAY_VIEW_EMPTY_SPACE + (ALL_DAY_VIEW_EMPTY_SPACE + eventHeight) * _eventsInOffset[offset],
+																		   eventWidth, eventHeight)];
+	eventView.weekView = self.weekView;
+	eventView.event = event;
+	eventView.backgroundColor = event.backgroundColor;
+	eventView.title = event.title;
+	eventView.textFont = self.textFont;
+	eventView.textColor = event.textColor;
+	
+	[self addSubview:eventView], [eventView release];
 	
 	_eventsInOffset[offset]++;
 	
@@ -718,8 +740,6 @@ static NSString const * const HOURS_24[] = {
 		_maxEvents = _eventsInOffset[offset];
 		[self setNeedsLayout];
 	}
-	
-	return rect;
 }
 
 @end
@@ -791,4 +811,3 @@ static const CGFloat kCorner       = 5.0;
 }
 
 @end
-
