@@ -27,6 +27,8 @@
 
 #import <Foundation/Foundation.h>
 
+NSInteger MAEvent_sortByStartTime(id ev1, id ev2, void *keyForSorting);
+
 @interface MAEvent : NSObject {
 	NSString *_title;
 	NSDate *_start;

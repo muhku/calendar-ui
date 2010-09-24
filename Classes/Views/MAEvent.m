@@ -34,6 +34,40 @@ static const unsigned int MINUTES_IN_HOUR                = 60;
 static const unsigned int DAY_IN_MINUTES                 = 1440;
 static const unsigned int MIN_EVENT_DURATION_IN_MINUTES  = 30;
 
+NSInteger MAEvent_sortByStartTime(id ev1, id ev2, void *keyForSorting) {
+	MAEvent *event1 = (MAEvent *)ev1;
+	MAEvent *event2 = (MAEvent *)ev2;
+				   
+	int v1 = [event1 minutesSinceMidnight];
+	int v2 = [event2 minutesSinceMidnight];
+	
+	if (v1 < v2) {
+		return NSOrderedAscending;
+	} else if (v1 > v2) {
+		return NSOrderedDescending;
+	} else {
+		/* Event start time is the same, compare by duration.
+		 */
+		int d1 = [event1 durationInMinutes];
+		int d2 = [event2 durationInMinutes];
+		
+		if (d1 < d2) {
+			/*
+			 * Event with a shorter duration is after an event
+			 * with a longer duration. Looks nicer when drawing the events.
+			 */
+			return NSOrderedDescending;
+		} else if (d1 > d2) {
+			return NSOrderedAscending;
+		} else {
+			/*
+			 * The last resort: compare by title.
+			 */
+			return [event1.title compare:event2.title];
+		}
+	}
+}
+
 @implementation MAEvent
 
 @synthesize title=_title;

@@ -415,9 +415,15 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	
 	unsigned int d = 0;
 	for (NSDate *weekday in self.weekdayView.weekdays) {
-		for (id e in [self.dataSource weekView:self eventsForDate:weekday]) {
+		NSArray *events = [self.dataSource weekView:self eventsForDate:weekday];
+		
+		for (id e in events) {
 			MAEvent *event = e;
 			event.displayDate = weekday;
+		}
+		
+		for (id e in [events sortedArrayUsingFunction:MAEvent_sortByStartTime context:NULL]) {
+			MAEvent *event = e;
 			
 			if (event.allDay) {
 				[self.allDayEventView addEventToOffset:d event:event];

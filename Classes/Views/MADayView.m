@@ -49,6 +49,8 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 #define DATE_COMPONENTS (NSYearCalendarUnit| NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekCalendarUnit |  NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit | NSWeekdayOrdinalCalendarUnit)
 #define CURRENT_CALENDAR [NSCalendar currentCalendar]
 
+//#define DAY_VIEW_DEBUG 1
+
 @interface MADayEventView : TapDetectingView <TapDetectingViewDelegate> {
 	NSString *_title;
 	UIColor *_textColor;
@@ -345,13 +347,28 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	
 	[self.allDayGridView resetCachedData];
 	
-	for (id e in [self.dataSource dayView:self eventsForDate:self.day]) {
+	NSArray *events = [self.dataSource dayView:self eventsForDate:self.day];
+	
+	for (id e in events) {
+		MAEvent *event = e;
+		event.displayDate = self.day;
+	}
+	
+#ifdef DAY_VIEW_DEBUG
+	int i = 0;
+#endif
+	for (id e in [events sortedArrayUsingFunction:MAEvent_sortByStartTime context:NULL]) {
 		MAEvent *event = e;
 		event.displayDate = self.day;
 		
 		if (event.allDay) {
 			[self.allDayGridView addEvent:event];
 		} else {
+#ifdef DAY_VIEW_DEBUG
+			NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:event.start];
+			event.title = [NSString stringWithFormat:@"%i %@", ++i, event.title];
+			NSLog(@"%@ %i:%i d%i", event.title, [components hour], [components minute], [event durationInMinutes]);
+#endif
 			[self.gridView addEvent:event];
 		}
 	}
@@ -455,6 +472,12 @@ static const CGFloat kCorner       = 5.0;
 						   CGRectGetMinY(self.bounds) + kCorner,
 						   CGRectGetWidth(self.bounds) - 2*kCorner,
 						   CGRectGetHeight(self.bounds) - 2*kCorner);
+	
+	CGSize sizeNeeded = [self.title sizeWithFont:self.textFont];
+	
+	if (_textRect.size.height > sizeNeeded.height) {
+		_textRect.origin.y = (_textRect.size.height - sizeNeeded.height) / 2.f + kCorner; 
+	}
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -635,9 +658,9 @@ static NSString const * const HOURS_24[] = {
 		if ([NSStringFromClass([view class])isEqualToString:@"MADayEventView"]) {
 			MADayEventView *ev = view;
 			ev.frame = CGRectMake(_lineX,
-								spacePerMinute * [ev.event minutesSinceMidnight] + _lineY[0],
-								self.bounds.size.width - _lineX,
-								spacePerMinute * [ev.event durationInMinutes]);
+								  spacePerMinute * [ev.event minutesSinceMidnight] + _lineY[0],
+								  self.bounds.size.width - _lineX,
+								  spacePerMinute * [ev.event durationInMinutes]);
 		}
 	}
 }
