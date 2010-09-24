@@ -55,6 +55,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	UIFont *_textFont;
 	MADayView *_dayView;
 	MAEvent *_event;
+	CGRect _textRect;
 }
 
 - (void)setupCustomInitialisation;
@@ -449,15 +450,17 @@ static const CGFloat kCorner       = 5.0;
 	[layer setCornerRadius:kCornerRadius];
 }
 
+- (void)layoutSubviews {
+	_textRect = CGRectMake(CGRectGetMinX(self.bounds) + kCorner,
+						   CGRectGetMinY(self.bounds) + kCorner,
+						   CGRectGetWidth(self.bounds) - 2*kCorner,
+						   CGRectGetHeight(self.bounds) - 2*kCorner);
+}
+
 - (void)drawRect:(CGRect)rect {
 	[self.textColor set];
 	
-	CGRect r = CGRectMake(CGRectGetMinX(self.bounds) + kCorner,
-						  CGRectGetMinY(self.bounds) + kCorner,
-						  CGRectGetWidth(self.bounds) - kCorner,
-						  CGRectGetHeight(self.bounds) - kCorner);
-	
-	[self.title drawInRect:r
+	[self.title drawInRect:_textRect
 				  withFont:self.textFont
 			 lineBreakMode:UILineBreakModeTailTruncation
 				 alignment:UITextAlignmentLeft];

@@ -64,7 +64,7 @@ static int counter = 5;
 		}
 	}
 	
-	((MAEvent *) [arr objectAtIndex:0]).title = @"Event lorem ipsum es dolor test";
+	((MAEvent *) [arr objectAtIndex:0]).title = @"Event lorem ipsum es dolor test. This a long text, which should clip the event view bounds.";
 	
 	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:startDate];
 	[components setHour:r];
