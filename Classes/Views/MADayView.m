@@ -654,13 +654,35 @@ static NSString const * const HOURS_24[] = {
 		}
 	}
 	
-	for (id view in self.subviews) {
-		if ([NSStringFromClass([view class])isEqualToString:@"MADayEventView"]) {
-			MADayEventView *ev = view;
-			ev.frame = CGRectMake(_lineX,
-								  spacePerMinute * [ev.event minutesSinceMidnight] + _lineY[0],
-								  self.bounds.size.width - _lineX,
-								  spacePerMinute * [ev.event durationInMinutes]);
+	NSArray *subviews = self.subviews;
+	int max = [subviews count];
+	MADayEventView *curEv = nil, *prevEv = nil;
+	
+	for (i=0; i < max; i++) {
+		if ([NSStringFromClass([[subviews objectAtIndex:i] class])isEqualToString:@"MADayEventView"]) {
+			prevEv = curEv;
+			curEv = [subviews objectAtIndex:i];
+							
+			curEv.frame = CGRectMake(_lineX,
+									 spacePerMinute * [curEv.event minutesSinceMidnight] + _lineY[0],
+									 self.bounds.size.width - _lineX,
+									 spacePerMinute * [curEv.event durationInMinutes]);
+			
+			/*
+			 * Layout intersecting events to two columns.
+			 */
+			if (CGRectIntersectsRect(curEv.frame, prevEv.frame))
+			{
+				prevEv.frame = CGRectMake(prevEv.frame.origin.x,
+										  prevEv.frame.origin.y,
+										  prevEv.frame.size.width / 2.f,
+										  prevEv.frame.size.height);
+					
+				curEv.frame = CGRectMake(curEv.frame.origin.x + (curEv.frame.size.width / 2.f),
+										 curEv.frame.origin.y,
+										 curEv.frame.size.width / 2.f,
+										 curEv.frame.size.height);
+			}
 		}
 	}
 }
