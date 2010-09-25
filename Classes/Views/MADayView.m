@@ -520,6 +520,7 @@ static const CGFloat kCorner       = 5.0;
 	[_day release], _day = [day copy];
 	
 	[self setNeedsLayout];
+	[self.dayView.gridView setNeedsLayout];
 }
 
 - (NSDate *)day {
@@ -536,7 +537,7 @@ static const CGFloat kCorner       = 5.0;
 											  self.dayView.gridView.frame.size.width, self.dayView.gridView.frame.size.height);
 	
 	self.dayView.scrollView.contentSize = CGSizeMake(self.dayView.scrollView.contentSize.width,
-													 CGRectGetHeight(self.bounds) + CGRectGetHeight(self.dayView.gridView.bounds));	
+													 CGRectGetHeight(self.bounds) + CGRectGetHeight(self.dayView.gridView.bounds));
 }
 
 - (void)addEvent:(MAEvent *)event {
@@ -554,6 +555,7 @@ static const CGFloat kCorner       = 5.0;
 	_eventCount++;
 	
 	[self setNeedsLayout];
+	[self.dayView.gridView setNeedsLayout];
 }
 
 @end
