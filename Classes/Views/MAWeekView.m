@@ -528,7 +528,7 @@ static NSString const * const HOURS_24[] = {
 - (void)drawRect:(CGRect)rect {
 	register unsigned int i;
 	const CGFloat cellHeight = self.weekView.gridView.cellHeight;
-	NSString **HOURS = ([self timeIs24HourFormat] ? HOURS_24 : HOURS_AM_PM);
+	const NSString *const *HOURS = ([self timeIs24HourFormat] ? HOURS_24 : HOURS_AM_PM);
 	
 	[self.textColor set];
 	

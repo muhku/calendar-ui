@@ -613,7 +613,7 @@ static NSString const * const HOURS_24[] = {
 	CGFloat maxTextWidth = 0, totalTextHeight = 0;
 	CGSize hourSize[25];
 	
-	NSString **HOURS = ([self timeIs24HourFormat] ? HOURS_24 : HOURS_AM_PM);
+	const NSString *const *HOURS = ([self timeIs24HourFormat] ? HOURS_24 : HOURS_AM_PM);
 	register unsigned int i;
 	
 	for (i=0; i < HOURS_IN_DAY; i++) {
@@ -690,7 +690,7 @@ static NSString const * const HOURS_24[] = {
 }
 
 - (void)drawRect:(CGRect)rect {
-	NSString **HOURS = ([self timeIs24HourFormat] ? HOURS_24 : HOURS_AM_PM);
+	const NSString *const *HOURS = ([self timeIs24HourFormat] ? HOURS_24 : HOURS_AM_PM);
 	register unsigned int i;
 	
 	const CGContextRef c = UIGraphicsGetCurrentContext();
