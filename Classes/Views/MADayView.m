@@ -469,10 +469,10 @@ static const CGFloat kCorner       = 5.0;
 }
 
 - (void)layoutSubviews {
-	_textRect = CGRectMake(CGRectGetMinX(self.bounds) + kCorner,
-						   CGRectGetMinY(self.bounds) + kCorner,
-						   CGRectGetWidth(self.bounds) - 2*kCorner,
-						   CGRectGetHeight(self.bounds) - 2*kCorner);
+	_textRect = CGRectMake((int) (CGRectGetMinX(self.bounds) + kCorner),
+						   (int) (CGRectGetMinY(self.bounds) + kCorner),
+						   (int) (CGRectGetWidth(self.bounds) - 2*kCorner),
+						   (int) (CGRectGetHeight(self.bounds) - 2*kCorner));
 	
 	CGSize sizeNeeded = [self.title sizeWithFont:self.textFont];
 	
