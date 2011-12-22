@@ -200,7 +200,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 		_leftArrow = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 		_leftArrow.tag = ARROW_LEFT;
 		_leftArrow.frame = CGRectMake(CGRectGetMinX(self.topBackground.bounds),
-									  (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2.f,
+									  (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
 									  ARROW_WIDTH, ARROW_HEIGHT);
 		[_leftArrow setImage:[UIImage imageNamed:LEFT_ARROW_IMAGE] forState:0];
 		[_leftArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
@@ -213,7 +213,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 		_rightArrow = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 		_rightArrow.tag = ARROW_RIGHT;
 		_rightArrow.frame = CGRectMake(CGRectGetWidth(self.topBackground.bounds) - ARROW_WIDTH,
-									   (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2.f,
+									   (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
 									   ARROW_WIDTH, ARROW_HEIGHT);
 		[_rightArrow setImage:[UIImage imageNamed:RIGHT_ARROW_IMAGE] forState:0];
 		[_rightArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
@@ -224,7 +224,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 - (UILabel *)dateLabel {
 	if (!_dateLabel) {
 		_dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.leftArrow.bounds),
-															   (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2.f,
+															   (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
 															   CGRectGetWidth(self.topBackground.bounds) - CGRectGetWidth(self.leftArrow.bounds) - CGRectGetWidth(self.rightArrow.bounds),
 															   ARROW_HEIGHT)];
 		_dateLabel.textAlignment = UITextAlignmentCenter;
@@ -477,7 +477,7 @@ static const CGFloat kCorner       = 5.0;
 	CGSize sizeNeeded = [self.title sizeWithFont:self.textFont];
 	
 	if (_textRect.size.height > sizeNeeded.height) {
-		_textRect.origin.y = (_textRect.size.height - sizeNeeded.height) / 2.f + kCorner; 
+		_textRect.origin.y = (int) ((_textRect.size.height - sizeNeeded.height) / 2 + kCorner);
 	}
 }
 
