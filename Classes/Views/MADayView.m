@@ -129,6 +129,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 
 @implementation MADayView
 
+@synthesize autoScrollToFirstEvent=_autoScrollToFirstEvent;
 @synthesize labelFontSize=_labelFontSize;
 @synthesize delegate=_delegate;
 
@@ -644,6 +645,7 @@ static NSString const * const HOURS_24[] = {
 	
 	_lineX = maxTextWidth + (maxTextWidth * 0.3);
 	
+	BOOL hasAllDayEvents = NO;
 	const CGFloat spacePerMinute = (_lineY[1] - _lineY[0]) / 60.f;
 	
 	for (id view in self.dayView.allDayGridView.subviews) {
@@ -653,39 +655,66 @@ static NSString const * const HOURS_24[] = {
 								  ev.frame.origin.y,
 								  (ev.frame.size.width - _lineX) * 0.99,
 								  ev.frame.size.height);
+			hasAllDayEvents = YES;
 		}
 	}
 	
 	NSArray *subviews = self.subviews;
 	int max = [subviews count];
-	MADayEventView *curEv = nil, *prevEv = nil;
+	MADayEventView *curEv = nil, *prevEv = nil, *firstEvent = nil;
 	
 	for (i=0; i < max; i++) {
-		if ([NSStringFromClass([[subviews objectAtIndex:i] class])isEqualToString:@"MADayEventView"]) {
-			prevEv = curEv;
-			curEv = [subviews objectAtIndex:i];
-							
-			curEv.frame = CGRectMake(_lineX,
-									 spacePerMinute * [curEv.event minutesSinceMidnight] + _lineY[0],
-									 self.bounds.size.width - _lineX,
-									 spacePerMinute * [curEv.event durationInMinutes]);
+		if (![NSStringFromClass([[subviews objectAtIndex:i] class])isEqualToString:@"MADayEventView"]) {
+			continue;
+		}
+		
+		prevEv = curEv;
+		curEv = [subviews objectAtIndex:i];
+						
+		curEv.frame = CGRectMake(_lineX,
+								 spacePerMinute * [curEv.event minutesSinceMidnight] + _lineY[0],
+								 self.bounds.size.width - _lineX,
+								 spacePerMinute * [curEv.event durationInMinutes]);
+		
+		/*
+		 * Layout intersecting events to two columns.
+		 */
+		if (CGRectIntersectsRect(curEv.frame, prevEv.frame))
+		{
+			prevEv.frame = CGRectMake(prevEv.frame.origin.x,
+									  prevEv.frame.origin.y,
+									  prevEv.frame.size.width / 2.f,
+									  prevEv.frame.size.height);
+				
+			curEv.frame = CGRectMake(curEv.frame.origin.x + (curEv.frame.size.width / 2.f),
+									 curEv.frame.origin.y,
+									 curEv.frame.size.width / 2.f,
+									 curEv.frame.size.height);
+		}
+		
+		if (!firstEvent || curEv.frame.origin.y < firstEvent.frame.origin.y) {
+			firstEvent = curEv;
+		}
+	}
+	
+	if (self.dayView.autoScrollToFirstEvent) {
+		CGPoint autoScrollPoint;
+		
+		if (!firstEvent || hasAllDayEvents) {
+			autoScrollPoint = CGPointMake(0, 0);
+		} else {
+			int minutesSinceLastHour = ([firstEvent.event minutesSinceMidnight] % 60);
+			CGFloat padding = minutesSinceLastHour * spacePerMinute + 7.5;
 			
-			/*
-			 * Layout intersecting events to two columns.
-			 */
-			if (CGRectIntersectsRect(curEv.frame, prevEv.frame))
-			{
-				prevEv.frame = CGRectMake(prevEv.frame.origin.x,
-										  prevEv.frame.origin.y,
-										  prevEv.frame.size.width / 2.f,
-										  prevEv.frame.size.height);
-					
-				curEv.frame = CGRectMake(curEv.frame.origin.x + (curEv.frame.size.width / 2.f),
-										 curEv.frame.origin.y,
-										 curEv.frame.size.width / 2.f,
-										 curEv.frame.size.height);
+			autoScrollPoint = CGPointMake(0, firstEvent.frame.origin.y - padding);
+			CGFloat maxY = self.dayView.scrollView.contentSize.height - CGRectGetHeight(self.dayView.scrollView.bounds);
+			
+			if (autoScrollPoint.y > maxY) {
+				autoScrollPoint.y = maxY;
 			}
 		}
+		
+		[self.dayView.scrollView setContentOffset:autoScrollPoint animated:YES];
 	}
 }
 

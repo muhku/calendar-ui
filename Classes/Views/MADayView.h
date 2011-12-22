@@ -44,6 +44,7 @@
 	MADayHourView *_hourView;
 	MADayGridView *_gridView;	
 	
+	BOOL _autoScrollToFirstEvent;
 	unsigned int _labelFontSize;
 	UIFont *_regularFont;
 	UIFont *_boldFont;
@@ -56,6 +57,7 @@
 	id<MADayViewDelegate> _delegate;
 }
 
+@property (nonatomic,assign) BOOL autoScrollToFirstEvent;
 @property (readwrite,assign) unsigned int labelFontSize;
 @property (nonatomic,copy) NSDate *day;
 @property (nonatomic,assign) IBOutlet id<MADayViewDataSource> dataSource;

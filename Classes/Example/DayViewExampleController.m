@@ -37,29 +37,32 @@
 
 @implementation DayViewExampleController
 
+- (void)viewDidLoad {
+	MADayView *dayView = (MADayView *) self.view;
+	/* The default is not to autoscroll, so let's override the default here */
+	dayView.autoScrollToFirstEvent = YES;
+}
+
 /* Implementation for the MADayViewDataSource protocol */
 
-static int counter = 5;
 static NSDate *date = nil;
 
 - (NSArray *)dayView:(MADayView *)dayView eventsForDate:(NSDate *)startDate {
 	date = startDate;
-	counter--;
 
-	NSArray *arr;
+	NSArray *arr = [NSArray arrayWithObjects: self.event, self.event, self.event,
+					self.event, self.event, self.event, self.event,  self.event, self.event, nil];
+	static size_t generateAllDayEvents;
 	
-	if (counter < 0) {
-		arr = [NSArray arrayWithObjects: self.event, self.event, self.event, self.event, self.event, self.event, self.event,  self.event, self.event, nil];
-	} else {
-		arr = [NSArray arrayWithObjects: self.event, self.event, self.event, self.event, self.event, self.event, self.event,  self.event, self.event, nil];
-		
+	generateAllDayEvents++;
+	
+	if (generateAllDayEvents % 4 == 0) {
 		((MAEvent *) [arr objectAtIndex:0]).title = @"All-day events test";
 		((MAEvent *) [arr objectAtIndex:0]).allDay = YES;
 		
 		((MAEvent *) [arr objectAtIndex:1]).title = @"All-day events test";
 		((MAEvent *) [arr objectAtIndex:1]).allDay = YES;
 	}
-	
 	return arr;
 }
 
