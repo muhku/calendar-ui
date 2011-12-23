@@ -49,8 +49,6 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 #define DATE_COMPONENTS (NSYearCalendarUnit| NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekCalendarUnit |  NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit | NSWeekdayOrdinalCalendarUnit)
 #define CURRENT_CALENDAR [NSCalendar currentCalendar]
 
-//#define DAY_VIEW_DEBUG 1
-
 @interface MADayEventView : TapDetectingView <TapDetectingViewDelegate> {
 	NSString *_title;
 	UIColor *_textColor;
@@ -185,12 +183,42 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	[super dealloc];
 }
 
+- (void)layoutSubviews {
+	self.topBackground.frame = CGRectMake(CGRectGetMinX(self.bounds),
+										  CGRectGetMinY(self.bounds),
+										  CGRectGetWidth(self.bounds), TOP_BACKGROUND_HEIGHT + 10);
+	self.leftArrow.frame = CGRectMake(CGRectGetMinX(self.topBackground.bounds),
+									  (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
+									  ARROW_WIDTH, ARROW_HEIGHT);
+	self.rightArrow.frame = CGRectMake(CGRectGetWidth(self.topBackground.bounds) - ARROW_WIDTH,
+									   (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
+									   ARROW_WIDTH, ARROW_HEIGHT);
+	self.dateLabel.frame = CGRectMake(CGRectGetMaxX(self.leftArrow.bounds),
+									  (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
+									  CGRectGetWidth(self.topBackground.bounds) - CGRectGetWidth(self.leftArrow.bounds) - CGRectGetWidth(self.rightArrow.bounds),
+									  ARROW_HEIGHT);
+	
+	self.allDayGridView.frame = CGRectMake(0, 0, // Top left corner of the scroll view
+										   CGRectGetWidth(self.bounds),
+										   ALL_DAY_VIEW_EMPTY_SPACE);
+	self.gridView.frame = CGRectMake(CGRectGetMinX(self.allDayGridView.bounds),
+									 CGRectGetMaxY(self.allDayGridView.bounds),
+									 CGRectGetWidth(self.bounds),
+									 [@"FOO" sizeWithFont:self.boldFont].height * SPACE_BETWEEN_HOUR_LABELS * HOURS_IN_DAY);
+	
+	self.scrollView.frame = CGRectMake(CGRectGetMinX(self.bounds),
+									   CGRectGetMaxY(self.topBackground.bounds),
+									   CGRectGetWidth(self.bounds),
+									   CGRectGetHeight(self.bounds) - CGRectGetHeight(self.topBackground.bounds));
+	self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.bounds),
+											 CGRectGetHeight(self.allDayGridView.bounds) + CGRectGetHeight(self.gridView.bounds));
+	
+	[self.gridView setNeedsDisplay];
+}
+
 - (UIImageView *)topBackground {
 	if (!_topBackground) {
 		_topBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:TOP_BACKGROUND_IMAGE]];
-		_leftArrow.frame = CGRectMake(CGRectGetMinX(self.bounds),
-									  CGRectGetMinY(self.bounds),
-									  CGRectGetWidth(self.bounds), TOP_BACKGROUND_HEIGHT);
 	}
 	return _topBackground;
 }
@@ -199,9 +227,6 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	if (!_leftArrow) {
 		_leftArrow = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 		_leftArrow.tag = ARROW_LEFT;
-		_leftArrow.frame = CGRectMake(CGRectGetMinX(self.topBackground.bounds),
-									  (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
-									  ARROW_WIDTH, ARROW_HEIGHT);
 		[_leftArrow setImage:[UIImage imageNamed:LEFT_ARROW_IMAGE] forState:0];
 		[_leftArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
 	}
@@ -212,9 +237,6 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	if (!_rightArrow) {
 		_rightArrow = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 		_rightArrow.tag = ARROW_RIGHT;
-		_rightArrow.frame = CGRectMake(CGRectGetWidth(self.topBackground.bounds) - ARROW_WIDTH,
-									   (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
-									   ARROW_WIDTH, ARROW_HEIGHT);
 		[_rightArrow setImage:[UIImage imageNamed:RIGHT_ARROW_IMAGE] forState:0];
 		[_rightArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
 	}
@@ -223,10 +245,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 
 - (UILabel *)dateLabel {
 	if (!_dateLabel) {
-		_dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.leftArrow.bounds),
-															   (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
-															   CGRectGetWidth(self.topBackground.bounds) - CGRectGetWidth(self.leftArrow.bounds) - CGRectGetWidth(self.rightArrow.bounds),
-															   ARROW_HEIGHT)];
+		_dateLabel = [[UILabel alloc] init];
 		_dateLabel.textAlignment = UITextAlignmentCenter;
 		_dateLabel.backgroundColor = [UIColor clearColor];
 		_dateLabel.font = [UIFont boldSystemFontOfSize:18];
@@ -236,16 +255,9 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 - (UIScrollView *)scrollView {
-	if (!_scrollView) {
-		CGRect rect = CGRectMake(CGRectGetMinX(self.bounds),
-								 CGRectGetMaxY(self.topBackground.bounds),
-								 CGRectGetWidth(self.bounds),
-								 CGRectGetHeight(self.bounds) - CGRectGetHeight(self.topBackground.bounds));
-		
-		_scrollView = [[UIScrollView alloc] initWithFrame:rect];
+	if (!_scrollView) {		
+		_scrollView = [[UIScrollView alloc] init];
 		_scrollView.backgroundColor      = [UIColor whiteColor];
-		_scrollView.contentSize          = CGSizeMake(CGRectGetWidth(self.bounds),
-													  CGRectGetHeight(self.allDayGridView.bounds) + CGRectGetHeight(self.gridView.bounds));
 		_scrollView.scrollEnabled        = TRUE;
 		_scrollView.alwaysBounceVertical = TRUE;
 	}
@@ -254,10 +266,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 
 - (MA_AllDayGridView *)allDayGridView {
 	if (!_allDayGridView) {
-		CGRect rect = CGRectMake(0, 0, // Top left corner of the scroll view
-								 CGRectGetWidth(self.bounds),
-								 ALL_DAY_VIEW_EMPTY_SPACE);
-		_allDayGridView = [[MA_AllDayGridView alloc] initWithFrame:rect];
+		_allDayGridView = [[MA_AllDayGridView alloc] init];
 		_allDayGridView.backgroundColor = [UIColor whiteColor];
 		_allDayGridView.dayView = self;
 		_allDayGridView.textFont = self.boldFont;
@@ -268,10 +277,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 
 - (MADayGridView *)gridView {
 	if (!_gridView){
-		_gridView = [[MADayGridView alloc] initWithFrame:CGRectMake(CGRectGetMinX(self.allDayGridView.bounds),
-																	CGRectGetMaxY(self.allDayGridView.bounds),
-																	CGRectGetWidth(self.bounds),
-																	[@"FOO" sizeWithFont:self.boldFont].height * SPACE_BETWEEN_HOUR_LABELS * HOURS_IN_DAY)];
+		_gridView = [[MADayGridView alloc] init];
 		_gridView.backgroundColor = [UIColor whiteColor];
 		_gridView.textFont = self.boldFont;
 		_gridView.textColor = [UIColor blackColor];
@@ -355,9 +361,6 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 		event.displayDate = self.day;
 	}
 	
-#ifdef DAY_VIEW_DEBUG
-	int i = 0;
-#endif
 	for (id e in [events sortedArrayUsingFunction:MAEvent_sortByStartTime context:NULL]) {
 		MAEvent *event = e;
 		event.displayDate = self.day;
@@ -365,11 +368,6 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 		if (event.allDay) {
 			[self.allDayGridView addEvent:event];
 		} else {
-#ifdef DAY_VIEW_DEBUG
-			NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:event.start];
-			event.title = [NSString stringWithFormat:@"%i %@", ++i, event.title];
-			NSLog(@"%@ %i:%i d%i", event.title, [components hour], [components minute], [event durationInMinutes]);
-#endif
 			[self.gridView addEvent:event];
 		}
 	}
@@ -656,6 +654,7 @@ static NSString const * const HOURS_24[] = {
 								  (ev.frame.size.width - _lineX) * 0.99,
 								  ev.frame.size.height);
 			hasAllDayEvents = YES;
+			[ev setNeedsDisplay];
 		}
 	}
 	
@@ -691,6 +690,8 @@ static NSString const * const HOURS_24[] = {
 									 curEv.frame.size.width / 2.f,
 									 curEv.frame.size.height);
 		}
+		
+		[curEv setNeedsDisplay];
 		
 		if (!firstEvent || curEv.frame.origin.y < firstEvent.frame.origin.y) {
 			firstEvent = curEv;
