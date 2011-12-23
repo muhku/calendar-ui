@@ -270,6 +270,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 									 CGRectGetMaxY(self.allDayEventView.bounds),
 									 CGRectGetWidth(self.bounds) - CGRectGetWidth(self.hourView.bounds),
 									 CGRectGetHeight(self.hourView.bounds));
+    [self.gridView setNeedsDisplay];
 }
 
 - (UIImageView *)topBackground {
