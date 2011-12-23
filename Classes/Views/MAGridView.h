@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Matias Muhonen <mmu@iki.fi>
+ * Copyright (c) 2010-2012 Matias Muhonen <mmu@iki.fi>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,8 +35,6 @@
 	BOOL _outerBorder;
 	CGFloat _lineWidth;
 	UIColor *_lineColor;
-	CGFloat _cellWidth;
-	CGFloat _cellHeight;
 }
 
 @property (readwrite,assign) unsigned int rows;

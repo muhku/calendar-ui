@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Matias Muhonen <mmu@iki.fi>
+ * Copyright (c) 2010-2012 Matias Muhonen <mmu@iki.fi>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,20 +70,10 @@
 
 - (void)setRows:(unsigned int)rows {
 	_rows = rows;
-	if (_rows > 0) {
-		_cellHeight = self.bounds.size.height / _rows;
-	} else {
-		_cellHeight = 0;
-	}
 }
 
 - (void)setColumns:(unsigned int)columns {
 	_columns = columns;
-	if (_columns > 0) {
-		_cellWidth = self.bounds.size.width  / _columns;
-	} else {
-		_cellWidth = 0;
-	}
 }
 
 - (unsigned int)rows {
@@ -95,11 +85,19 @@
 }
 
 - (CGFloat)cellWidth {
-	return _cellWidth;
+	if (_columns > 0) {
+		return self.bounds.size.width  / _columns;
+	} else {
+		return 0;
+	}
 }
 
 - (CGFloat)cellHeight {
-	return _cellHeight;
+	if (_rows > 0) {
+		return self.bounds.size.height / _rows;
+	} else {
+		return 0;
+	}
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -108,6 +106,8 @@
 		return;
 	}
 	
+    CGFloat cellHeight = self.cellHeight;
+    CGFloat cellWidth = self.cellWidth;
 	register unsigned int i;
 	CGFloat x, y;
 	
@@ -134,7 +134,7 @@
 			CGContextAddLineToPoint(c, self.bounds.size.width, y);
 			
 		NEXT_ROW:
-			y += _cellHeight;
+			y += cellHeight;
 		}
 		
 		x = CGRectGetMinX(rect);
@@ -153,7 +153,7 @@
 			CGContextAddLineToPoint(c, x, self.bounds.size.height);
 			
 		NEXT_COLUMN:
-			x += _cellWidth;
+			x += cellWidth;
 		}
 	}
 	
