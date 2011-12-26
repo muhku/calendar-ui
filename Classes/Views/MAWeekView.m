@@ -420,6 +420,10 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	self.dateLabel.text = [self titleText];
 	
 	[self reloadData];
+	
+	if ([self.delegate respondsToSelector:@selector(weekView:weekDidChange:)]) {
+        [self.delegate weekView:self weekDidChange:self.week];
+	}
 }
 
 - (NSDate *)week {

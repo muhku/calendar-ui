@@ -77,5 +77,6 @@
 
 @optional
 - (void)weekView:(MAWeekView *)weekView eventTapped:(MAEvent *)event;
+- (void)weekView:(MAWeekView *)weekView weekDidChange:(NSDate *)week;
 
 @end
