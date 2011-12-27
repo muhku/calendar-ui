@@ -65,7 +65,7 @@ Donate
 
 I have a [PayPal donation page](http://muhonen.net/donate/) if you want to support the development of the project.
 
-![http://muhonen.net/donate/](http://muhonen.net/donate/d.gif)
+[![](http://muhonen.net/donate/d.gif)](http://muhonen.net/donate/)
 
 License
 ====================
