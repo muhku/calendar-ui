@@ -4,13 +4,6 @@ Introduction
 MACalendarUI is a project which offers calendar user interface for iPhone applications.
 The current version includes the following views:
 
-Donate
-====================
-
-I have a [PayPal donation page](http://muhonen.net/donate/) if you want to support the development of the project.
-
-[![](http://muhonen.net/donate/d.gif)](http://muhonen.net/donate/)
-
 MAWeekView
 ---------------------
 
@@ -66,6 +59,13 @@ Your contributions are most welcome. If you want to send code, please a send
 a patch and make sure it can be merged to the master branch without conflicts.
 
 If you have anything to ask, you can use email.
+
+Donate
+====================
+
+I have a [PayPal donation page](http://muhonen.net/donate/) if you want to support the development of the project.
+
+[![](http://muhonen.net/donate/d.gif)](http://muhonen.net/donate/)
 
 License
 ====================
