@@ -60,6 +60,14 @@ a patch and make sure it can be merged to the master branch without conflicts.
 
 If you have anything to ask, you can use email.
 
+Donate
+====================
+
+If you want to support the development of the project, you may use the following
+donate button.
+
+<iframe src="http://muhonen.net/donate/" with="160" height="70"></iframe>
+
 License
 ====================
 
