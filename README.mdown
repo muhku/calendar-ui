@@ -7,7 +7,7 @@ The current version includes the following views:
 MAWeekView
 ---------------------
 
-![](http://www.muhonen.net/project/CalendarUI/weekview.png)
+![](http://muhonen.net/project/CalendarUI/weekview.png)
 
 A weekly view for viewing events, displays a whole week. Navigation using the arrows on
 the top of the view or using the swipe gesture. It has two delegates: MAWeekViewDataSource and
@@ -45,7 +45,7 @@ MADayView
 MADayView is a daily view for displaying events. Please see the MADayViewDataSource and
 MADayViewDelegate protocols for further details.
 
-![](http://www.muhonen.net/project/CalendarUI/dayview.png)
+![](http://muhonen.net/project/CalendarUI/dayview.png)
 
 Using the classes in your own project
 ====================
