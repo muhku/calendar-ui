@@ -52,6 +52,10 @@ Using the classes in your own project
 
 Just copy Classes/Views/* and Resources/Images/* to your own project.
 
+The overall class dependencies look like this:
+
+![](http://muhonen.net/project/CalendarUI/classes.png)
+
 Reporting bugs and contributing
 ====================
 
