@@ -2,6 +2,9 @@ Introduction
 ====================
 
 MACalendarUI is a project which offers calendar user interface for iPhone applications.
+
+The _master_ branch uses ARC. If you do not use ARC, checkout the _non-arc_ branch.
+
 The current version includes the following views:
 
 MAWeekView
