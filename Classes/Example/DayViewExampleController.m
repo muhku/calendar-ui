@@ -74,7 +74,7 @@ static NSDate *date = nil;
 	static int counter;
 	static BOOL flag;
 	
-	NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
 	
 	[dict setObject:[NSString stringWithFormat:@"number %i", counter++] forKey:@"test"];
 	
@@ -107,7 +107,7 @@ static NSDate *date = nil;
 	
 	event.end = [CURRENT_CALENDAR dateFromComponents:components];
 	
-	return [event autorelease];
+	return event;
 }
 
 /* Implementation for the MADayViewDelegate protocol */
@@ -116,8 +116,8 @@ static NSDate *date = nil;
 	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:event.start];
 	NSString *eventInfo = [NSString stringWithFormat:@"Hour %i. Userinfo: %@", [components hour], [event.userInfo objectForKey:@"test"]];
 	
-	UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:event.title
-													 message:eventInfo delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease];
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:event.title
+													 message:eventInfo delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 	[alert show];
 }
 
@@ -136,9 +136,6 @@ static NSDate *date = nil;
 }
 
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 
 @end

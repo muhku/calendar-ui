@@ -55,13 +55,13 @@
 	UISwipeGestureRecognizer *_swipeLeftRecognizer, *_swipeRightRecognizer;
 	
 	id<MAWeekViewDataSource> _dataSource;
-	id<MAWeekViewDelegate> _delegate;
+	id<MAWeekViewDelegate> __unsafe_unretained _delegate;
 }
 
 @property (readwrite,assign) unsigned int labelFontSize;
 @property (nonatomic,copy) NSDate *week;
-@property (nonatomic,assign) IBOutlet id<MAWeekViewDataSource> dataSource;
-@property (nonatomic,assign) IBOutlet id<MAWeekViewDelegate> delegate;
+@property (nonatomic,unsafe_unretained) IBOutlet id<MAWeekViewDataSource> dataSource;
+@property (nonatomic,unsafe_unretained) IBOutlet id<MAWeekViewDelegate> delegate;
 
 - (void)reloadData;
 

@@ -94,7 +94,7 @@ static int counter = 7 * 5;
 - (MAEvent *)event {
 	static int counter;
 	
-	NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
 	
 	[dict setObject:[NSString stringWithFormat:@"number %i", counter++] forKey:@"test"];
 	
@@ -103,7 +103,7 @@ static int counter = 7 * 5;
 	event.textColor = [UIColor whiteColor];
 	event.allDay = NO;
 	event.userInfo = dict;
-	return [event autorelease];
+	return event;
 }
 
 /* Implementation for the MAWeekViewDelegate protocol */
@@ -112,8 +112,8 @@ static int counter = 7 * 5;
 	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:event.start];
 	NSString *eventInfo = [NSString stringWithFormat:@"Hour %i. Userinfo: %@", [components hour], [event.userInfo objectForKey:@"test"]];
 	
-	UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:event.title
-													 message:eventInfo delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease];
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:event.title
+													 message:eventInfo delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 	[alert show];
 }
 
@@ -129,8 +129,5 @@ static int counter = 7 * 5;
 	// e.g. self.myOutlet = nil;
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 @end

@@ -127,15 +127,5 @@ NSInteger MAEvent_sortByStartTime(id ev1, id ev2, void *keyForSorting) {
 
 #undef DATE_CMP
 
-- (void)dealloc {
-	self.title = nil;
-	self.start = nil;
-	self.end = nil;
-	self.displayDate = nil;
-	self.backgroundColor = nil;
-	self.textColor = nil;
-	self.userInfo = nil;
-	[super dealloc];
-}
 
 @end

@@ -68,10 +68,10 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 - (void)setupCustomInitialisation;
 
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, retain) UIColor *textColor;
-@property (nonatomic, retain) UIFont *textFont;
-@property (nonatomic, retain) MAWeekView *weekView;
-@property (nonatomic, retain) MAEvent *event;
+@property (nonatomic, strong) UIColor *textColor;
+@property (nonatomic, strong) UIFont *textFont;
+@property (nonatomic, strong) MAWeekView *weekView;
+@property (nonatomic, strong) MAEvent *event;
 @property (nonatomic, assign) size_t xOffset;
 @property (nonatomic, assign) size_t yOffset;
 
@@ -85,9 +85,9 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 - (BOOL)timeIs24HourFormat;
 
-@property (nonatomic, retain) MAWeekView *weekView;
-@property (nonatomic, retain) UIColor *textColor;
-@property (nonatomic, retain) UIFont *textFont;
+@property (nonatomic, strong) MAWeekView *weekView;
+@property (nonatomic, strong) UIColor *textColor;
+@property (nonatomic, strong) UIFont *textFont;
 
 @end
 
@@ -100,11 +100,11 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	NSMutableArray *_weekdays;
 }
 
-@property (nonatomic, retain) MAWeekView *weekView;
+@property (nonatomic, strong) MAWeekView *weekView;
 @property (nonatomic,copy) NSDate *week;
-@property (nonatomic, retain) UIColor *textColor, *sundayColor, *todayColor;
-@property (nonatomic, retain) UIFont *textFont;
-@property (readonly) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) UIColor *textColor, *sundayColor, *todayColor;
+@property (nonatomic, strong) UIFont *textFont;
+@property (weak, readonly) NSDateFormatter *dateFormatter;
 @property (readonly) NSArray *weekdays;
 
 @end
@@ -117,8 +117,8 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	UIFont *_textFont;
 }
 
-@property (nonatomic, retain) MAWeekView *weekView;
-@property (nonatomic, retain) UIFont *textFont;
+@property (nonatomic, strong) MAWeekView *weekView;
+@property (nonatomic, strong) UIFont *textFont;
 @property (nonatomic,copy) NSDate *week;
 
 - (void)addEventToOffset:(unsigned int)offset event:(MAEvent *)event;
@@ -177,40 +177,39 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	self.labelFontSize = DEFAULT_LABEL_FONT_SIZE;
 	self.week = [NSDate date];
     
-	[self addSubview:self.topBackground], [self.topBackground release];
-	[self addSubview:self.leftArrow], [self.leftArrow release];
-	[self addSubview:self.rightArrow], [self.rightArrow release];
-	[self addSubview:self.dateLabel], [self.dateLabel release];
-	[self addSubview:self.weekdayView], [self.weekdayView release];
+	[self addSubview:self.topBackground];
+	[self addSubview:self.leftArrow];
+	[self addSubview:self.rightArrow];
+	[self addSubview:self.dateLabel];
+	[self addSubview:self.weekdayView];
 	
-	[self addSubview:self.scrollView], [self.scrollView release];
+	[self addSubview:self.scrollView];
 	
-	[self.scrollView addSubview:self.allDayEventView], [self.allDayEventView release];
-	[self.scrollView addSubview:self.hourView], [self.hourView release];
-	[self.scrollView addSubview:self.gridView], [self.gridView release];
+	[self.scrollView addSubview:self.allDayEventView];
+	[self.scrollView addSubview:self.hourView];
+	[self.scrollView addSubview:self.gridView];
 	
-	[self.gridView addGestureRecognizer:self.swipeLeftRecognizer], [self.swipeLeftRecognizer release];
-	[self.gridView addGestureRecognizer:self.swipeRightRecognizer], [self.swipeRightRecognizer release];
+	[self.gridView addGestureRecognizer:self.swipeLeftRecognizer];
+	[self.gridView addGestureRecognizer:self.swipeRightRecognizer];
 }
 
 - (void)dealloc {
-	[_topBackground release], _topBackground = nil;
-	[_leftArrow release], _leftArrow = nil;
-	[_rightArrow release], _rightArrow = nil;
-	[_dateLabel release], _dateLabel = nil;
+	_topBackground = nil;
+	_leftArrow = nil;
+	_rightArrow = nil;
+	_dateLabel = nil;
 	
-	[_scrollView release], _scrollView = nil;
-	[_gridView release], _gridView = nil;
-	[_allDayEventView release], _allDayEventView = nil;
+	_scrollView = nil;
+	_gridView = nil;
+	_allDayEventView = nil;
 	
-	[_regularFont release], _regularFont = nil;
-	[_boldFont release], _boldFont = nil;
+	_regularFont = nil;
+	_boldFont = nil;
 	
-	[_swipeLeftRecognizer release], _swipeLeftRecognizer = nil;
-	[_swipeRightRecognizer release], _swipeRightRecognizer = nil;
+	_swipeLeftRecognizer = nil;
+	_swipeRightRecognizer = nil;
 	
-	[_week release], _week = nil;
-	[super dealloc];
+	_week = nil;
 }
 
 - (void)layoutSubviews {
@@ -282,7 +281,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 - (UIButton *)leftArrow {
 	if (!_leftArrow) {
-		_leftArrow = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+		_leftArrow = [UIButton buttonWithType:UIButtonTypeCustom];
 		_leftArrow.tag = ARROW_LEFT;
 		[_leftArrow setImage:[UIImage imageNamed:LEFT_ARROW_IMAGE] forState:0];
 		[_leftArrow addTarget:self action:@selector(changeWeek:) forControlEvents:UIControlEventTouchUpInside];
@@ -292,7 +291,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 - (UIButton *)rightArrow {
 	if (!_rightArrow) {
-		_rightArrow = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+		_rightArrow = [UIButton buttonWithType:UIButtonTypeCustom];
 		_rightArrow.tag = ARROW_RIGHT;
 		[_rightArrow setImage:[UIImage imageNamed:RIGHT_ARROW_IMAGE] forState:0];
 		[_rightArrow addTarget:self action:@selector(changeWeek:) forControlEvents:UIControlEventTouchUpInside];
@@ -372,14 +371,14 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 - (UIFont *)regularFont {
 	if (!_regularFont) {
-		_regularFont = [[UIFont systemFontOfSize:_labelFontSize] retain];
+		_regularFont = [UIFont systemFontOfSize:_labelFontSize];
 	}
 	return _regularFont;
 }
 
 - (UIFont *)boldFont {
 	if (!_boldFont) {
-		_boldFont = [[UIFont boldSystemFontOfSize:_labelFontSize] retain];
+		_boldFont = [UIFont boldSystemFontOfSize:_labelFontSize];
 	}
 	return _boldFont;
 }
@@ -401,7 +400,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 }
 
 - (void)setDataSource:(id <MAWeekViewDataSource>)dataSource {
-	[_dataSource release], _dataSource = dataSource;
+	_dataSource = dataSource;
 	[self reloadData];
 }
 
@@ -411,7 +410,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 - (void)setWeek:(NSDate *)date {
 	NSDate *firstOfWeek = [self firstDayOfWeekFromDate:date];
-	[_week release], _week = [firstOfWeek retain];
+	_week = firstOfWeek;
 	self.weekdayView.week = _week;
 	[self.weekdayView setNeedsDisplay];
 	
@@ -428,7 +427,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 - (NSDate *)week {
 	NSDate *date = [_week copy]; // alloc
-	return [date autorelease];
+	return date;
 }
 
 - (void)reloadData {
@@ -518,7 +517,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 }
 
 - (NSString *)titleText {
-	NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:_week];
 	
 	NSArray *monthSymbols = [formatter shortMonthSymbols];
@@ -554,7 +553,6 @@ static NSString const * const HOURS_24[] = {
 	NSRange amRange = [dateString rangeOfString:[formatter AMSymbol]];
 	NSRange pmRange = [dateString rangeOfString:[formatter PMSymbol]];
 	BOOL is24Hour = amRange.location == NSNotFound && pmRange.location == NSNotFound;
-	[formatter release];
 	return is24Hour;
 }
 
@@ -579,12 +577,6 @@ static NSString const * const HOURS_24[] = {
 	}
 }
 
-- (void)dealloc {
-	self.weekView = nil;
-	self.textColor = nil;
-	self.textFont = nil;
-	[super dealloc];
-}
 
 @end
 
@@ -600,7 +592,7 @@ static NSString const * const HOURS_24[] = {
 	eventView.textColor = event.textColor;
 	eventView.xOffset = offset;
 	
-	[self addSubview:eventView], [eventView release];
+	[self addSubview:eventView];
 }
 
 - (void)layoutSubviews {
@@ -630,14 +622,14 @@ static NSString const * const HOURS_24[] = {
 @synthesize weekdays=_weekdays;
 
 - (void)setWeek:(NSDate *)week {
-	[_week release], _week = [week retain];
+	_week = week;
 	
 	NSDate *date = _week;
 	NSDateComponents *components;
 	NSDateComponents *components2 = [[NSDateComponents alloc] init];
 	[components2 setDay:1];
 	
-	[_weekdays release], _weekdays = [[NSMutableArray alloc] init];
+	_weekdays = [[NSMutableArray alloc] init];
 	
 	for (register unsigned int i=0; i < DAYS_IN_WEEK; i++) {
 		[_weekdays addObject:date];
@@ -646,7 +638,6 @@ static NSString const * const HOURS_24[] = {
 		date = [CURRENT_CALENDAR dateByAddingComponents:components2 toDate:date options:0];
 	}
 	
-	[components2 release];
 }
 
 - (NSDate *)week {
@@ -703,15 +694,9 @@ static NSString const * const HOURS_24[] = {
 }
 
 - (void)dealloc {
-	self.weekView = nil;
 	self.week = nil;
-	self.textColor = nil;
-	self.sundayColor = nil;
-	self.todayColor = nil;
-	self.textFont = nil;
-	[_dateFormatter release], _dateFormatter = nil;
-	[_weekdays release], _weekdays = nil;
-	[super dealloc];
+	_dateFormatter = nil;
+	_weekdays = nil;
 }
 
 @end
@@ -722,10 +707,7 @@ static NSString const * const HOURS_24[] = {
 @synthesize textFont=_textFont;
 
 - (void)dealloc {
-	[_week release], _week = nil;
-	self.weekView = nil;
-	self.textFont = nil;
-	[super dealloc];
+	_week = nil;
 }
 
 #define ARR_SET(X) _eventsInOffset[X] = 0;
@@ -746,7 +728,7 @@ static NSString const * const HOURS_24[] = {
 - (void)setWeek:(NSDate *)week {
 	[self resetCachedData];
 	
-	[_week release], _week = [week copy];
+	_week = [week copy];
 	
 	[self setNeedsLayout];
 }
@@ -798,7 +780,7 @@ static NSString const * const HOURS_24[] = {
 	eventView.xOffset = offset;
 	eventView.yOffset = _eventsInOffset[offset]++;
 	
-	[self addSubview:eventView], [eventView release];
+	[self addSubview:eventView];
 	
 	if (_eventsInOffset[offset] > _maxEvents) {
 		_maxEvents = _eventsInOffset[offset];
@@ -822,14 +804,6 @@ static const CGFloat kCorner       = 5.0;
 @synthesize xOffset=_xOffset;
 @synthesize yOffset=_yOffset;
 
-- (void)dealloc {
-	self.textColor = nil;
-	self.textFont = nil;
-	self.title = nil;
-	self.weekView = nil;
-	self.event = nil;
-	[super dealloc];
-}
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {

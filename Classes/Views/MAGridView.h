@@ -43,7 +43,7 @@
 @property (readwrite,assign) BOOL verticalLines;
 @property (readwrite,assign) BOOL outerBorder;
 @property (readwrite,assign) CGFloat lineWidth;
-@property (nonatomic, retain) UIColor *lineColor;
+@property (nonatomic, strong) UIColor *lineColor;
 @property (readonly) CGFloat cellWidth;
 @property (readonly) CGFloat cellHeight;
 

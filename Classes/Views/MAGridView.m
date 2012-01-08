@@ -53,10 +53,6 @@
 	return self;
 }
 
-- (void)dealloc {
-	self.lineColor = nil;
-	[super dealloc];
-}
 
 - (void)setupCustomInitialisation {
 	self.rows             = 8;

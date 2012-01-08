@@ -47,9 +47,9 @@ NSInteger MAEvent_sortByStartTime(id ev1, id ev2, void *keyForSorting);
 @property (nonatomic,copy) NSDate *end;
 @property (nonatomic,copy) NSDate *displayDate;
 @property (readwrite,assign) BOOL allDay;
-@property (nonatomic,retain) UIColor *backgroundColor;
-@property (nonatomic,retain) UIColor *textColor;
-@property (nonatomic,retain) NSDictionary *userInfo;
+@property (nonatomic,strong) UIColor *backgroundColor;
+@property (nonatomic,strong) UIColor *textColor;
+@property (nonatomic,strong) NSDictionary *userInfo;
 
 - (unsigned int)durationInMinutes;
 - (unsigned int)minutesSinceMidnight;

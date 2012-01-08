@@ -54,14 +54,14 @@
 	UISwipeGestureRecognizer *_swipeLeftRecognizer, *_swipeRightRecognizer;
 	
 	id<MADayViewDataSource> _dataSource;
-	id<MADayViewDelegate> _delegate;
+	id<MADayViewDelegate> __unsafe_unretained _delegate;
 }
 
 @property (nonatomic,assign) BOOL autoScrollToFirstEvent;
 @property (readwrite,assign) unsigned int labelFontSize;
 @property (nonatomic,copy) NSDate *day;
-@property (nonatomic,assign) IBOutlet id<MADayViewDataSource> dataSource;
-@property (nonatomic,assign) IBOutlet id<MADayViewDelegate> delegate;
+@property (nonatomic,unsafe_unretained) IBOutlet id<MADayViewDataSource> dataSource;
+@property (nonatomic,unsafe_unretained) IBOutlet id<MADayViewDelegate> delegate;
 
 - (void)reloadData;
 

@@ -61,10 +61,10 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 - (void)setupCustomInitialisation;
 
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, retain) UIColor *textColor;
-@property (nonatomic, retain) UIFont *textFont;
-@property (nonatomic, retain) MADayView *dayView;
-@property (nonatomic, retain) MAEvent *event;
+@property (nonatomic, strong) UIColor *textColor;
+@property (nonatomic, strong) UIFont *textFont;
+@property (nonatomic, strong) MADayView *dayView;
+@property (nonatomic, strong) MAEvent *event;
 
 @end
 
@@ -77,8 +77,8 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 @property (nonatomic, assign) CGFloat eventHeight;
-@property (nonatomic, retain) MADayView *dayView;
-@property (nonatomic, retain) UIFont *textFont;
+@property (nonatomic, strong) MADayView *dayView;
+@property (nonatomic, strong) UIFont *textFont;
 @property (nonatomic,copy) NSDate *day;
 
 - (void)addEvent:(MAEvent *)event;
@@ -98,9 +98,9 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 - (BOOL)timeIs24HourFormat;
 - (void)addEvent:(MAEvent *)event;
 
-@property (nonatomic, retain) MADayView *dayView;
-@property (nonatomic, retain) UIColor *textColor;
-@property (nonatomic, retain) UIFont *textFont;
+@property (nonatomic, strong) MADayView *dayView;
+@property (nonatomic, strong) UIColor *textColor;
+@property (nonatomic, strong) UIFont *textFont;
 
 @end
 
@@ -149,38 +149,37 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	self.labelFontSize = DEFAULT_LABEL_FONT_SIZE;
 	self.day = [NSDate date];
 	
-	[self addSubview:self.topBackground], [self.topBackground release];
-	[self addSubview:self.leftArrow], [self.leftArrow release];
-	[self addSubview:self.rightArrow], [self.rightArrow release];
-	[self addSubview:self.dateLabel], [self.dateLabel release];
+	[self addSubview:self.topBackground];
+	[self addSubview:self.leftArrow];
+	[self addSubview:self.rightArrow];
+	[self addSubview:self.dateLabel];
 	
-	[self addSubview:self.scrollView], [self.scrollView release];
+	[self addSubview:self.scrollView];
 	
-	[self.scrollView addSubview:self.allDayGridView], [self.allDayGridView release];
-	[self.scrollView addSubview:self.gridView], [self.gridView release];
+	[self.scrollView addSubview:self.allDayGridView];
+	[self.scrollView addSubview:self.gridView];
 	
-	[self.gridView addGestureRecognizer:self.swipeLeftRecognizer], [self.swipeLeftRecognizer release];
-	[self.gridView addGestureRecognizer:self.swipeRightRecognizer], [self.swipeRightRecognizer release];
+	[self.gridView addGestureRecognizer:self.swipeLeftRecognizer];
+	[self.gridView addGestureRecognizer:self.swipeRightRecognizer];
 }
 
 - (void)dealloc {
-	[_topBackground release], _topBackground = nil;
-	[_leftArrow release], _leftArrow = nil;
-	[_rightArrow release], _rightArrow = nil;
-	[_dateLabel release], _dateLabel = nil;
+	_topBackground = nil;
+	_leftArrow = nil;
+	_rightArrow = nil;
+	_dateLabel = nil;
 	
-	[_scrollView release], _scrollView = nil;
-	[_allDayGridView release], _allDayGridView = nil;
-	[_gridView release], _gridView = nil;
+	_scrollView = nil;
+	_allDayGridView = nil;
+	_gridView = nil;
 	
-	[_regularFont release], _regularFont = nil;
-	[_boldFont release], _boldFont = nil;
+	_regularFont = nil;
+	_boldFont = nil;
 	
-	[_swipeLeftRecognizer release], _swipeLeftRecognizer = nil;
-	[_swipeRightRecognizer release], _swipeRightRecognizer = nil;
+	_swipeLeftRecognizer = nil;
+	_swipeRightRecognizer = nil;
 	
-	[_day release], _day = nil;
-	[super dealloc];
+	_day = nil;
 }
 
 - (void)layoutSubviews {
@@ -225,7 +224,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 
 - (UIButton *)leftArrow {
 	if (!_leftArrow) {
-		_leftArrow = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+		_leftArrow = [UIButton buttonWithType:UIButtonTypeCustom];
 		_leftArrow.tag = ARROW_LEFT;
 		[_leftArrow setImage:[UIImage imageNamed:LEFT_ARROW_IMAGE] forState:0];
 		[_leftArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
@@ -235,7 +234,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 
 - (UIButton *)rightArrow {
 	if (!_rightArrow) {
-		_rightArrow = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+		_rightArrow = [UIButton buttonWithType:UIButtonTypeCustom];
 		_rightArrow.tag = ARROW_RIGHT;
 		[_rightArrow setImage:[UIImage imageNamed:RIGHT_ARROW_IMAGE] forState:0];
 		[_rightArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
@@ -288,14 +287,14 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 
 - (UIFont *)regularFont {
 	if (!_regularFont) {
-		_regularFont = [[UIFont systemFontOfSize:_labelFontSize] retain];
+		_regularFont = [UIFont systemFontOfSize:_labelFontSize];
 	}
 	return _regularFont;
 }
 
 - (UIFont *)boldFont {
 	if (!_boldFont) {
-		_boldFont = [[UIFont boldSystemFontOfSize:_labelFontSize] retain];
+		_boldFont = [UIFont boldSystemFontOfSize:_labelFontSize];
 	}
 	return _boldFont;
 }
@@ -317,7 +316,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 - (void)setDataSource:(id <MADayViewDataSource>)dataSource {
-	[_dataSource release], _dataSource = dataSource;
+	_dataSource = dataSource;
 	[self reloadData];
 }
 
@@ -326,7 +325,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 - (void)setDay:(NSDate *)date {
-	[_day release], _day = [date copy];
+	_day = [date copy];
 	
 	self.allDayGridView.day = _day;
 	self.dateLabel.text = [self titleText];
@@ -336,7 +335,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 
 - (NSDate *)day {
 	NSDate *date = [_day copy]; // alloc
-	return [date autorelease];
+	return date;
 }
 
 - (void)reloadData {
@@ -408,7 +407,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 - (NSString *)titleText {
-	NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateStyle:NSDateFormatterShortStyle];
 	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:_day];
 	
@@ -432,14 +431,6 @@ static const CGFloat kCorner       = 5.0;
 @synthesize dayView=_dayView;
 @synthesize event=_event;
 
-- (void)dealloc {
-	self.textColor = nil;
-	self.textFont = nil;
-	self.title = nil;
-	self.dayView = nil;
-	self.event = nil;
-	[super dealloc];
-}
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -503,10 +494,7 @@ static const CGFloat kCorner       = 5.0;
 @synthesize textFont=_textFont;
 
 - (void)dealloc {
-	[_day release], _day = nil;
-	self.dayView = nil;
-	self.textFont = nil;
-	[super dealloc];
+	_day = nil;
 }
 
 - (void)resetCachedData {
@@ -516,7 +504,7 @@ static const CGFloat kCorner       = 5.0;
 - (void)setDay:(NSDate *)day {
 	[self resetCachedData];
 	
-	[_day release], _day = [day copy];
+	_day = [day copy];
 	
 	[self setNeedsLayout];
 	[self.dayView.gridView setNeedsLayout];
@@ -549,7 +537,7 @@ static const CGFloat kCorner       = 5.0;
 	eventView.textFont = self.textFont;
 	eventView.textColor = event.textColor;
 	
-	[self addSubview:eventView], [eventView release];
+	[self addSubview:eventView];
 	
 	_eventCount++;
 	
@@ -575,12 +563,6 @@ static NSString const * const HOURS_24[] = {
 @synthesize textColor=_textColor;
 @synthesize textFont=_textFont;
 
-- (void)dealloc {
-	self.dayView = nil;
-	self.textColor = nil;
-	self.textFont = nil;
-	[super dealloc];
-}
 
 - (void)addEvent:(MAEvent *)event {
 	MADayEventView *eventView = [[MADayEventView alloc] initWithFrame:CGRectZero];
@@ -591,7 +573,7 @@ static NSString const * const HOURS_24[] = {
 	eventView.textFont = self.dayView.boldFont;
 	eventView.textColor = event.textColor;
 	
-	[self addSubview:eventView], [eventView release];
+	[self addSubview:eventView];
 	
 	[self setNeedsLayout];
 }
@@ -604,7 +586,6 @@ static NSString const * const HOURS_24[] = {
 	NSRange amRange = [dateString rangeOfString:[formatter AMSymbol]];
 	NSRange pmRange = [dateString rangeOfString:[formatter PMSymbol]];
 	BOOL is24Hour = amRange.location == NSNotFound && pmRange.location == NSNotFound;
-	[formatter release];
 	return is24Hour;
 }
 
