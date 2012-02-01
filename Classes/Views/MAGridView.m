@@ -38,6 +38,7 @@
 @synthesize lineWidth=_lineWidth;
 @synthesize lineColor=_lineColor;
 @synthesize outerBorder=_outerBorder;
+@synthesize rows = _rows, columns = _columns, cellWidth, cellHeight;
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
