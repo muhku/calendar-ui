@@ -163,25 +163,6 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	[self.gridView addGestureRecognizer:self.swipeRightRecognizer];
 }
 
-- (void)dealloc {
-	_topBackground = nil;
-	_leftArrow = nil;
-	_rightArrow = nil;
-	_dateLabel = nil;
-	
-	_scrollView = nil;
-	_allDayGridView = nil;
-	_gridView = nil;
-	
-	_regularFont = nil;
-	_boldFont = nil;
-	
-	_swipeLeftRecognizer = nil;
-	_swipeRightRecognizer = nil;
-	
-	_day = nil;
-}
-
 - (void)layoutSubviews {
 	self.topBackground.frame = CGRectMake(CGRectGetMinX(self.bounds),
 										  CGRectGetMinY(self.bounds),
@@ -216,103 +197,114 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 - (UIImageView *)topBackground {
-	if (!_topBackground) {
-		_topBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:TOP_BACKGROUND_IMAGE]];
+    static UIImageView *topBackground;
+	if (!topBackground) {
+		topBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:TOP_BACKGROUND_IMAGE]];
 	}
-	return _topBackground;
+	return topBackground;
 }
 
 - (UIButton *)leftArrow {
-	if (!_leftArrow) {
-		_leftArrow = [UIButton buttonWithType:UIButtonTypeCustom];
-		_leftArrow.tag = ARROW_LEFT;
-		[_leftArrow setImage:[UIImage imageNamed:LEFT_ARROW_IMAGE] forState:0];
-		[_leftArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
+    static UIButton *leftArrow;
+	if (!leftArrow) {
+		leftArrow = [UIButton buttonWithType:UIButtonTypeCustom];
+		leftArrow.tag = ARROW_LEFT;
+		[leftArrow setImage:[UIImage imageNamed:LEFT_ARROW_IMAGE] forState:0];
+		[leftArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
 	}
-	return _leftArrow;
+	return leftArrow;
 }
 
 - (UIButton *)rightArrow {
-	if (!_rightArrow) {
-		_rightArrow = [UIButton buttonWithType:UIButtonTypeCustom];
-		_rightArrow.tag = ARROW_RIGHT;
-		[_rightArrow setImage:[UIImage imageNamed:RIGHT_ARROW_IMAGE] forState:0];
-		[_rightArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
+    static UIButton *rightArrow;
+	if (!rightArrow) {
+		rightArrow = [UIButton buttonWithType:UIButtonTypeCustom];
+		rightArrow.tag = ARROW_RIGHT;
+		[rightArrow setImage:[UIImage imageNamed:RIGHT_ARROW_IMAGE] forState:0];
+		[rightArrow addTarget:self action:@selector(changeDay:) forControlEvents:UIControlEventTouchUpInside];
 	}
-	return _rightArrow;
+	return rightArrow;
 }
 
 - (UILabel *)dateLabel {
-	if (!_dateLabel) {
-		_dateLabel = [[UILabel alloc] init];
-		_dateLabel.textAlignment = UITextAlignmentCenter;
-		_dateLabel.backgroundColor = [UIColor clearColor];
-		_dateLabel.font = [UIFont boldSystemFontOfSize:18];
-		_dateLabel.textColor = [UIColor colorWithRed:59/255. green:73/255. blue:88/255. alpha:1];
+    static UILabel *dateLabel;
+	if (!dateLabel) {
+		dateLabel = [[UILabel alloc] init];
+		dateLabel.textAlignment = UITextAlignmentCenter;
+		dateLabel.backgroundColor = [UIColor clearColor];
+		dateLabel.font = [UIFont boldSystemFontOfSize:18];
+		dateLabel.textColor = [UIColor colorWithRed:59/255. green:73/255. blue:88/255. alpha:1];
 	}
-	return _dateLabel;
+	return dateLabel;
 }
 
 - (UIScrollView *)scrollView {
-	if (!_scrollView) {		
-		_scrollView = [[UIScrollView alloc] init];
-		_scrollView.backgroundColor      = [UIColor whiteColor];
-		_scrollView.scrollEnabled        = TRUE;
-		_scrollView.alwaysBounceVertical = TRUE;
+    static UIScrollView *scrollView;
+	if (!scrollView) {		
+		scrollView = [[UIScrollView alloc] init];
+		scrollView.backgroundColor      = [UIColor whiteColor];
+		scrollView.scrollEnabled        = TRUE;
+		scrollView.alwaysBounceVertical = TRUE;
 	}
-	return _scrollView;
+	return scrollView;
 }
 
 - (MA_AllDayGridView *)allDayGridView {
-	if (!_allDayGridView) {
-		_allDayGridView = [[MA_AllDayGridView alloc] init];
-		_allDayGridView.backgroundColor = [UIColor whiteColor];
-		_allDayGridView.dayView = self;
-		_allDayGridView.textFont = self.boldFont;
-		_allDayGridView.eventHeight = [@"FOO" sizeWithFont:self.regularFont].height * 2.f;
+    static MA_AllDayGridView *allDayGridView;
+	if (!allDayGridView) {
+		allDayGridView = [[MA_AllDayGridView alloc] init];
+		allDayGridView.backgroundColor = [UIColor whiteColor];
+		allDayGridView.dayView = self;
+		allDayGridView.textFont = self.boldFont;
+		allDayGridView.eventHeight = [@"FOO" sizeWithFont:self.regularFont].height * 2.f;
 	}
-	return _allDayGridView;
+	return allDayGridView;
 }
 
 - (MADayGridView *)gridView {
-	if (!_gridView){
-		_gridView = [[MADayGridView alloc] init];
-		_gridView.backgroundColor = [UIColor whiteColor];
-		_gridView.textFont = self.boldFont;
-		_gridView.textColor = [UIColor blackColor];
-		_gridView.dayView = self;
+    static MADayGridView *gridView;
+	if (!gridView){
+		gridView = [[MADayGridView alloc] init];
+		gridView.backgroundColor = [UIColor whiteColor];
+		gridView.textFont = self.boldFont;
+		gridView.textColor = [UIColor blackColor];
+		gridView.dayView = self;
 	}
-	return _gridView;
+	return gridView;
 }
 
 - (UIFont *)regularFont {
-	if (!_regularFont) {
-		_regularFont = [UIFont systemFontOfSize:_labelFontSize];
+    static UIFont *regularFont;
+	if (!regularFont) {
+		regularFont = [UIFont systemFontOfSize:_labelFontSize];
 	}
-	return _regularFont;
+	return regularFont;
 }
 
 - (UIFont *)boldFont {
-	if (!_boldFont) {
-		_boldFont = [UIFont boldSystemFontOfSize:_labelFontSize];
+    static UIFont *boldFont;
+	if (!boldFont) {
+		boldFont = [UIFont boldSystemFontOfSize:_labelFontSize];
 	}
-	return _boldFont;
+	return boldFont;
 }
 
 - (UISwipeGestureRecognizer *)swipeLeftRecognizer {
-	if (!_swipeLeftRecognizer) {
-		_swipeLeftRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
-		_swipeLeftRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+    static UISwipeGestureRecognizer *swipeLeftRecognizer;
+	if (!swipeLeftRecognizer) {
+		swipeLeftRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
+		swipeLeftRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
 	}
-	return _swipeLeftRecognizer;
+	return swipeLeftRecognizer;
 }
 
 - (UISwipeGestureRecognizer *)swipeRightRecognizer {
-	if (!_swipeRightRecognizer) {
-		_swipeRightRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
-		_swipeRightRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+    static UISwipeGestureRecognizer *swipeRightRecognizer;
+	if (!swipeRightRecognizer) {
+		swipeRightRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
+		swipeRightRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
 	}
-	return _swipeRightRecognizer;
+	return swipeRightRecognizer;
 }
 
 - (void)setDataSource:(id <MADayViewDataSource>)dataSource {

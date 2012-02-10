@@ -35,23 +35,10 @@
 @protocol MADayViewDataSource, MADayViewDelegate;
 
 @interface MADayView : UIView {
-	UIImageView *_topBackground;
-	UIButton *_leftArrow, *_rightArrow;
-	UILabel *_dateLabel;
-	
-	UIScrollView *_scrollView;
-	MA_AllDayGridView *_allDayGridView;
-	MADayHourView *_hourView;
-	MADayGridView *_gridView;	
-	
 	BOOL _autoScrollToFirstEvent;
 	unsigned int _labelFontSize;
-	UIFont *_regularFont;
-	UIFont *_boldFont;
 	
 	NSDate *_day;
-	
-	UISwipeGestureRecognizer *_swipeLeftRecognizer, *_swipeRightRecognizer;
 	
 	id<MADayViewDataSource> _dataSource;
 	id<MADayViewDelegate> __unsafe_unretained _delegate;
