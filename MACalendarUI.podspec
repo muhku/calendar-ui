@@ -6,4 +6,5 @@ Pod::Spec.new do |s|
 	s.source       = { :git => 'https://github.com/muhku/calendar-ui.git'}
 	s.source_files = 'Classes/Views'
 	s.requires_arc = true
+	s.homepage     = 'https://github.com/muhku/calendar-ui'
 end
