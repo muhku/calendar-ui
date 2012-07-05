@@ -939,6 +939,7 @@ static const CGFloat kCorner       = 5.0;
 		
 		self.event.start = [CURRENT_CALENDAR dateFromComponents:startComponents];
 		self.event.end   = [self.event.start dateByAddingTimeInterval:eventDurationInMinutes * 60];
+        self.event.displayDate = [CURRENT_CALENDAR dateFromComponents:startComponents];
 		
 		self.weekView.swipeLeftRecognizer.enabled = YES;
 		self.weekView.swipeRightRecognizer.enabled = YES;
