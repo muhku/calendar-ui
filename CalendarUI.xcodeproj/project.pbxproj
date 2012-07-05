@@ -48,7 +48,7 @@
 		63C6A7D712462C0F007DCAAF /* MAGridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MAGridView.h; path = Classes/Views/MAGridView.h; sourceTree = SOURCE_ROOT; };
 		63C6A7D812462C0F007DCAAF /* MAGridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MAGridView.m; path = Classes/Views/MAGridView.m; sourceTree = SOURCE_ROOT; };
 		63C6A7D912462C0F007DCAAF /* MAWeekView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MAWeekView.h; path = Classes/Views/MAWeekView.h; sourceTree = SOURCE_ROOT; };
-		63C6A7DA12462C0F007DCAAF /* MAWeekView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MAWeekView.m; path = Classes/Views/MAWeekView.m; sourceTree = SOURCE_ROOT; };
+		63C6A7DA12462C0F007DCAAF /* MAWeekView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MAWeekView.m; path = Classes/Views/MAWeekView.m; sourceTree = SOURCE_ROOT; usesTabs = 1; };
 		63C6A7E312462C2E007DCAAF /* ma_leftArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ma_leftArrow.png; path = Images/ma_leftArrow.png; sourceTree = SOURCE_ROOT; };
 		63C6A7E412462C2E007DCAAF /* ma_leftArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ma_leftArrow@2x.png"; path = "Images/ma_leftArrow@2x.png"; sourceTree = SOURCE_ROOT; };
 		63C6A7E512462C2E007DCAAF /* ma_rightArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ma_rightArrow.png; path = Images/ma_rightArrow.png; sourceTree = SOURCE_ROOT; };
