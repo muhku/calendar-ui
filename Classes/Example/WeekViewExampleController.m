@@ -110,10 +110,19 @@ static int counter = 7 * 5;
 
 - (void)weekView:(MAWeekView *)weekView eventTapped:(MAEvent *)event {
 	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:event.start];
-	NSString *eventInfo = [NSString stringWithFormat:@"Hour %i. Userinfo: %@", [components hour], [event.userInfo objectForKey:@"test"]];
+	NSString *eventInfo = [NSString stringWithFormat:@"Event tapped: %02i:%02i. Userinfo: %@", [components hour], [components minute], [event.userInfo objectForKey:@"test"]];
 	
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:event.title
 													 message:eventInfo delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	[alert show];
+}
+
+- (void)weekView:(MAWeekView *)weekView eventDragged:(MAEvent *)event {
+	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:event.start];
+	NSString *eventInfo = [NSString stringWithFormat:@"Event dragged to %02i:%02i. Userinfo: %@", [components hour], [components minute], [event.userInfo objectForKey:@"test"]];
+	
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:event.title
+                                                    message:eventInfo delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 	[alert show];
 }
 

@@ -63,6 +63,8 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	CGRect _textRect;
 	size_t _xOffset;
 	size_t _yOffset;
+	CGPoint _touchStart;
+	BOOL _wasDragged;
 }
 
 - (void)setupCustomInitialisation;
@@ -158,6 +160,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 @synthesize labelFontSize=_labelFontSize;
 @synthesize delegate=_delegate;
+@synthesize eventDraggingEnabled;
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -175,6 +178,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 - (void)setupCustomInitialisation {
 	self.labelFontSize = DEFAULT_LABEL_FONT_SIZE;
+	self.eventDraggingEnabled = YES;
 	self.week = [NSDate date];
     
 	[self addSubview:self.topBackground];
@@ -316,6 +320,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 		_scrollView.backgroundColor      = [UIColor whiteColor];
 		_scrollView.scrollEnabled        = TRUE;
 		_scrollView.alwaysBounceVertical = TRUE;
+		_scrollView.canCancelContentTouches = NO;
 	}
 	return _scrollView;
 }
@@ -823,6 +828,7 @@ static const CGFloat kCorner       = 5.0;
 	twoFingerTapIsPossible = NO;
 	multipleTouches = NO;
 	delegate = self;
+	self.exclusiveTouch = YES;
 	
 	self.alpha = kAlpha;
 	CALayer *layer = [self layer];
@@ -850,6 +856,101 @@ static const CGFloat kCorner       = 5.0;
 	if ([self.weekView.delegate respondsToSelector:@selector(weekView:eventTapped:)]) {
         [self.weekView.delegate weekView:self.weekView eventTapped:self.event];
 	}
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	_touchStart = [[touches anyObject] locationInView:self];
+	_wasDragged = NO;
+	[super touchesBegan:touches withEvent:event];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	[super touchesMoved:touches withEvent:event];
+	
+	if (!self.weekView.eventDraggingEnabled) {
+		return;
+	}
+	
+	/* No drag & drop for all-day events */
+	if (_event.allDay) {
+		return;
+	}
+	
+	const CGPoint point = [[touches anyObject] locationInView:self];
+	CGRect newFrame = CGRectMake(self.frame.origin.x + point.x - _touchStart.x,
+								 self.frame.origin.y + point.y - _touchStart.y,
+								 self.frame.size.width,
+								 self.frame.size.height);
+	
+	/* Do not allow dragging outside the grid */
+	const CGPoint topLeft = CGPointMake(CGRectGetMinX(newFrame), CGRectGetMinY(newFrame));
+	const CGPoint topRight = CGPointMake(CGRectGetMaxX(newFrame), CGRectGetMinY(newFrame));
+	const CGPoint bottomLeft = CGPointMake(CGRectGetMinX(newFrame), CGRectGetMaxY(newFrame));
+	const CGPoint bottomRight = CGPointMake(CGRectGetMaxX(newFrame), CGRectGetMaxY(newFrame));
+	
+	if (![self.weekView.gridView hitTest:topLeft withEvent:event]) {
+		return;
+	}
+	if (![self.weekView.gridView hitTest:topRight withEvent:event]) {
+		return;
+	}
+	if (![self.weekView.gridView hitTest:bottomLeft withEvent:event]) {
+		return;
+	}
+	if (![self.weekView.gridView hitTest:bottomRight withEvent:event]) {
+		return;
+	}
+	
+	self.frame = newFrame;
+	
+	self.weekView.swipeLeftRecognizer.enabled = NO;
+	self.weekView.swipeRightRecognizer.enabled = NO;
+	_wasDragged = YES;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	if (_wasDragged) {
+		const double posX = self.frame.origin.x / self.weekView.gridView.cellWidth;
+		const double posY = self.frame.origin.y / self.weekView.gridView.cellHeight;
+		
+		/* Align to the grid */		
+		CGRect alignedFrame = CGRectMake(self.weekView.gridView.cellWidth * (int)round(posX),
+										 self.frame.origin.y,
+										 self.frame.size.width,
+										 self.frame.size.height);
+		
+		self.frame = alignedFrame;
+		
+		/* Calculate the new time for the event */
+		
+		const int eventDurationInMinutes = [self.event durationInMinutes];
+		NSDate *weekday = [self.weekView.weekdayView.weekdays objectAtIndex:(int)round(posX)];
+		double hours;
+		double minutes;
+		minutes = modf(posY, &hours) * 60;
+		
+		NSDateComponents *startComponents = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:weekday];
+		[startComponents setHour:(int)hours];
+		[startComponents setMinute:(int)minutes];
+		[startComponents setSecond:0];
+		
+		self.event.start = [CURRENT_CALENDAR dateFromComponents:startComponents];
+		self.event.end   = [self.event.start dateByAddingTimeInterval:eventDurationInMinutes * 60];
+		
+		self.weekView.swipeLeftRecognizer.enabled = YES;
+		self.weekView.swipeRightRecognizer.enabled = YES;
+		
+		if ([self.weekView.delegate respondsToSelector:@selector(weekView:eventDragged:)]) {
+			[self.weekView.delegate weekView:self.weekView eventDragged:self.event];
+		}
+		
+		return;
+	}
+	
+	[super touchesEnded:touches withEvent:event];
 }
 
 @end

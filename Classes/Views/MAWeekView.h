@@ -58,6 +58,7 @@
 	id<MAWeekViewDelegate> __unsafe_unretained _delegate;
 }
 
+@property (readwrite,assign) BOOL eventDraggingEnabled;
 @property (readwrite,assign) unsigned int labelFontSize;
 @property (nonatomic,copy) NSDate *week;
 @property (nonatomic,unsafe_unretained) IBOutlet id<MAWeekViewDataSource> dataSource;
@@ -78,5 +79,6 @@
 @optional
 - (void)weekView:(MAWeekView *)weekView eventTapped:(MAEvent *)event;
 - (void)weekView:(MAWeekView *)weekView weekDidChange:(NSDate *)week;
+- (void)weekView:(MAWeekView *)weekView eventDragged:(MAEvent *)event;
 
 @end
