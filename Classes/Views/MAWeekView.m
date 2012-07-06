@@ -878,6 +878,13 @@ static const CGFloat kCorner       = 5.0;
 		return;
 	}
 	
+	if ([self.weekView.delegate respondsToSelector:@selector(weekView:eventDraggingEnabled:)]) {
+		BOOL eventDraggingEnabled = [self.weekView.delegate weekView:self.weekView eventDraggingEnabled:self.event];
+		if (!eventDraggingEnabled) {
+			return;
+		}
+	}
+	
 	const CGPoint point = [[touches anyObject] locationInView:self];
 	CGRect newFrame = CGRectMake(self.frame.origin.x + point.x - _touchStart.x,
 								 self.frame.origin.y + point.y - _touchStart.y,
