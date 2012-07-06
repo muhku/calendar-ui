@@ -163,25 +163,6 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	[self.gridView addGestureRecognizer:self.swipeRightRecognizer];
 }
 
-- (void)dealloc {
-	_topBackground = nil;
-	_leftArrow = nil;
-	_rightArrow = nil;
-	_dateLabel = nil;
-	
-	_scrollView = nil;
-	_allDayGridView = nil;
-	_gridView = nil;
-	
-	_regularFont = nil;
-	_boldFont = nil;
-	
-	_swipeLeftRecognizer = nil;
-	_swipeRightRecognizer = nil;
-	
-	_day = nil;
-}
-
 - (void)layoutSubviews {
 	self.topBackground.frame = CGRectMake(CGRectGetMinX(self.bounds),
 										  CGRectGetMinY(self.bounds),
@@ -492,10 +473,6 @@ static const CGFloat kCorner       = 5.0;
 @synthesize dayView=_dayView;
 @synthesize eventHeight=_eventHeight;
 @synthesize textFont=_textFont;
-
-- (void)dealloc {
-	_day = nil;
-}
 
 - (void)resetCachedData {
 	_eventCount = 0;
