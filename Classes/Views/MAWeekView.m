@@ -197,25 +197,6 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	[self.gridView addGestureRecognizer:self.swipeRightRecognizer];
 }
 
-- (void)dealloc {
-	_topBackground = nil;
-	_leftArrow = nil;
-	_rightArrow = nil;
-	_dateLabel = nil;
-	
-	_scrollView = nil;
-	_gridView = nil;
-	_allDayEventView = nil;
-	
-	_regularFont = nil;
-	_boldFont = nil;
-	
-	_swipeLeftRecognizer = nil;
-	_swipeRightRecognizer = nil;
-	
-	_week = nil;
-}
-
 - (void)layoutSubviews {
 	const CGSize sizeNecessary = [TEXT_WHICH_MUST_FIT sizeWithFont:self.regularFont];
 	const CGSize sizeNecessaryBold = [TEXT_WHICH_MUST_FIT sizeWithFont:self.boldFont];
@@ -698,22 +679,12 @@ static NSString const * const HOURS_24[] = {
 	return _dateFormatter;
 }
 
-- (void)dealloc {
-	self.week = nil;
-	_dateFormatter = nil;
-	_weekdays = nil;
-}
-
 @end
 
 @implementation MAEventGridView
 
 @synthesize weekView=_weekView;
 @synthesize textFont=_textFont;
-
-- (void)dealloc {
-	_week = nil;
-}
 
 #define ARR_SET(X) _eventsInOffset[X] = 0;
 
