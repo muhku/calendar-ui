@@ -306,7 +306,11 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 - (void)setDay:(NSDate *)date {
-	_day = [date copy];
+	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:date];
+	[components setHour:0];
+	[components setMinute:0];
+	[components setSecond:0];
+	_day = [CURRENT_CALENDAR dateFromComponents:components];
 	
 	self.allDayGridView.day = _day;
 	self.dateLabel.text = [self titleText];
@@ -315,7 +319,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 - (NSDate *)day {
-	NSDate *date = [_day copy]; // alloc
+	NSDate *date = [_day copy];
 	return date;
 }
 
