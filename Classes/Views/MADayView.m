@@ -80,6 +80,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 @property (nonatomic, strong) MADayView *dayView;
 @property (nonatomic, strong) UIFont *textFont;
 @property (nonatomic,copy) NSDate *day;
+@property (readonly) BOOL hasAllDayEvents;
 
 - (void)addEvent:(MAEvent *)event;
 - (void)resetCachedData;
@@ -101,6 +102,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 @property (nonatomic, strong) MADayView *dayView;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong) UIFont *textFont;
+@property (readonly) CGFloat lineX;
 
 @end
 
@@ -478,6 +480,15 @@ static const CGFloat kCorner       = 5.0;
 @synthesize eventHeight=_eventHeight;
 @synthesize textFont=_textFont;
 
+- (BOOL)hasAllDayEvents {
+	for (id view in self.subviews) {
+		if ([NSStringFromClass([view class])isEqualToString:@"MADayEventView"]) {
+			return YES;
+		}
+	}
+	return NO;
+}
+
 - (void)resetCachedData {
 	_eventCount = 0;
 }
@@ -506,6 +517,20 @@ static const CGFloat kCorner       = 5.0;
 	
 	self.dayView.scrollView.contentSize = CGSizeMake(self.dayView.scrollView.contentSize.width,
 													 CGRectGetHeight(self.bounds) + CGRectGetHeight(self.dayView.gridView.bounds));
+	
+	for (id view in self.subviews) {
+		if ([NSStringFromClass([view class])isEqualToString:@"MADayEventView"]) {
+			MADayEventView *ev = view;
+			
+			CGFloat x = (int)self.dayView.gridView.lineX,
+					y = (int)ev.frame.origin.y,
+					w = (int)((self.frame.size.width - self.dayView.gridView.lineX) * 0.99),
+					h = (int)ev.frame.size.height;
+			
+			ev.frame = CGRectMake(x, y, w, h);
+			[ev setNeedsDisplay];
+		}
+	}
 }
 
 - (void)addEvent:(MAEvent *)event {
@@ -544,6 +569,10 @@ static NSString const * const HOURS_24[] = {
 @synthesize textColor=_textColor;
 @synthesize textFont=_textFont;
 
+- (CGFloat)lineX
+{
+	return _lineX;
+}
 
 - (void)addEvent:(MAEvent *)event {
 	MADayEventView *eventView = [[MADayEventView alloc] initWithFrame:CGRectZero];
@@ -605,24 +634,10 @@ static NSString const * const HOURS_24[] = {
 	
 	_lineX = maxTextWidth + (maxTextWidth * 0.3);
 	
-	BOOL hasAllDayEvents = NO;
-	const CGFloat spacePerMinute = (_lineY[1] - _lineY[0]) / 60.f;
-	
-	for (id view in self.dayView.allDayGridView.subviews) {
-		if ([NSStringFromClass([view class])isEqualToString:@"MADayEventView"]) {
-			MADayEventView *ev = view;
-			ev.frame = CGRectMake(_lineX,
-								  ev.frame.origin.y,
-								  (ev.frame.size.width - _lineX) * 0.99,
-								  ev.frame.size.height);
-			hasAllDayEvents = YES;
-			[ev setNeedsDisplay];
-		}
-	}
-	
 	NSArray *subviews = self.subviews;
 	int max = [subviews count];
 	MADayEventView *curEv = nil, *prevEv = nil, *firstEvent = nil;
+	const CGFloat spacePerMinute = (_lineY[1] - _lineY[0]) / 60.f;
 	
 	for (i=0; i < max; i++) {
 		if (![NSStringFromClass([[subviews objectAtIndex:i] class])isEqualToString:@"MADayEventView"]) {
@@ -632,25 +647,25 @@ static NSString const * const HOURS_24[] = {
 		prevEv = curEv;
 		curEv = [subviews objectAtIndex:i];
 						
-		curEv.frame = CGRectMake(_lineX,
-								 spacePerMinute * [curEv.event minutesSinceMidnight] + _lineY[0],
-								 self.bounds.size.width - _lineX,
-								 spacePerMinute * [curEv.event durationInMinutes]);
+		curEv.frame = CGRectMake((int) _lineX,
+								 (int) (spacePerMinute * [curEv.event minutesSinceMidnight] + _lineY[0]),
+								 (int) (self.bounds.size.width - _lineX),
+								 (int) (spacePerMinute * [curEv.event durationInMinutes]));
 		
 		/*
 		 * Layout intersecting events to two columns.
 		 */
 		if (CGRectIntersectsRect(curEv.frame, prevEv.frame))
 		{
-			prevEv.frame = CGRectMake(prevEv.frame.origin.x,
-									  prevEv.frame.origin.y,
-									  prevEv.frame.size.width / 2.f,
-									  prevEv.frame.size.height);
+			prevEv.frame = CGRectMake((int) (prevEv.frame.origin.x),
+									  (int) (prevEv.frame.origin.y),
+									  (int) (prevEv.frame.size.width / 2.f),
+									  (int) (prevEv.frame.size.height));
 				
-			curEv.frame = CGRectMake(curEv.frame.origin.x + (curEv.frame.size.width / 2.f),
-									 curEv.frame.origin.y,
-									 curEv.frame.size.width / 2.f,
-									 curEv.frame.size.height);
+			curEv.frame = CGRectMake((int) (curEv.frame.origin.x + (curEv.frame.size.width / 2.f)),
+									 (int) (curEv.frame.origin.y),
+									 (int) (curEv.frame.size.width / 2.f),
+									 (int) (curEv.frame.size.height));
 		}
 		
 		[curEv setNeedsDisplay];
@@ -663,7 +678,7 @@ static NSString const * const HOURS_24[] = {
 	if (self.dayView.autoScrollToFirstEvent) {
 		CGPoint autoScrollPoint;
 		
-		if (!firstEvent || hasAllDayEvents) {
+		if (!firstEvent || self.dayView.allDayGridView.hasAllDayEvents) {
 			autoScrollPoint = CGPointMake(0, 0);
 		} else {
 			int minutesSinceLastHour = ([firstEvent.event minutesSinceMidnight] % 60);
