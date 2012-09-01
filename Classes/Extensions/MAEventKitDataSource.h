@@ -25,14 +25,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-#import "MADayView.h" // MADayViewDataSource,MADayViewDelegate
+#import "MADayView.h"
+#import "MAWeekView.h"
 
-@class MAEventKitDataSource;
+@class EKEventStore;
 
-@interface DayViewExampleController : UIViewController<MADayViewDataSource,MADayViewDelegate> {
-    MAEventKitDataSource *_eventKitDataSource;
+@interface MAEventKitDataSource : NSObject<MADayViewDataSource,MAWeekViewDataSource> {
+    EKEventStore *_eventStore;
 }
 
 @end

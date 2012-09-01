@@ -27,12 +27,17 @@
 
 #import "DayViewExampleController.h"
 #import "MAEvent.h"
+#import "MAEventKitDataSource.h"
+
+// Uncomment the following line to use the built in calendar as a source for events:
+//#define USE_EVENTKIT_DATA_SOURCE 1
 
 #define DATE_COMPONENTS (NSYearCalendarUnit| NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekCalendarUnit |  NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit | NSWeekdayOrdinalCalendarUnit)
 #define CURRENT_CALENDAR [NSCalendar currentCalendar]
 
 @interface DayViewExampleController(PrivateMethods)
 @property (readonly) MAEvent *event;
+@property (readonly) MAEventKitDataSource *eventKitDataSource;
 @end
 
 @implementation DayViewExampleController
@@ -51,6 +56,13 @@
 
 static NSDate *date = nil;
 
+#ifdef USE_EVENTKIT_DATA_SOURCE
+
+- (NSArray *)dayView:(MADayView *)dayView eventsForDate:(NSDate *)startDate {
+    return [self.eventKitDataSource dayView:dayView eventsForDate:startDate];
+}
+
+#else
 - (NSArray *)dayView:(MADayView *)dayView eventsForDate:(NSDate *)startDate {
 	date = startDate;
 
@@ -69,6 +81,7 @@ static NSDate *date = nil;
 	}
 	return arr;
 }
+#endif
 
 - (MAEvent *)event {
 	static int counter;
@@ -108,6 +121,13 @@ static NSDate *date = nil;
 	event.end = [CURRENT_CALENDAR dateFromComponents:components];
 	
 	return event;
+}
+
+- (MAEventKitDataSource *)eventKitDataSource {
+    if (!_eventKitDataSource) {
+        _eventKitDataSource = [[MAEventKitDataSource alloc] init];
+    }
+    return _eventKitDataSource;
 }
 
 /* Implementation for the MADayViewDelegate protocol */

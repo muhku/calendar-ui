@@ -28,7 +28,10 @@
 #import <UIKit/UIKit.h>
 #import "MAWeekView.h" // MAWeekViewDataSource,MAWeekViewDelegate
 
+@class MAEventKitDataSource;
+
 @interface WeekViewExampleController : UIViewController<MAWeekViewDataSource,MAWeekViewDelegate> {
+    MAEventKitDataSource *_eventKitDataSource;
 }
 
 @end

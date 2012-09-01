@@ -28,12 +28,17 @@
 #import "WeekViewExampleController.h"
 #import "MAWeekView.h"
 #import "MAEvent.h"
+#import "MAEventKitDataSource.h"
+
+// Uncomment the following line to use the built in calendar as a source for events:
+//#define USE_EVENTKIT_DATA_SOURCE 1
 
 #define DATE_COMPONENTS (NSYearCalendarUnit| NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekCalendarUnit |  NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit | NSWeekdayOrdinalCalendarUnit)
 #define CURRENT_CALENDAR [NSCalendar currentCalendar]
 
 @interface WeekViewExampleController(PrivateMethods)
 @property (readonly) MAEvent *event;
+@property (readonly) MAEventKitDataSource *eventKitDataSource;
 @end
 
 @implementation WeekViewExampleController
@@ -43,6 +48,14 @@
 }
 
 /* Implementation for the MAWeekViewDataSource protocol */
+
+#ifdef USE_EVENTKIT_DATA_SOURCE
+
+- (NSArray *)weekView:(MAWeekView *)weekView eventsForDate:(NSDate *)startDate {
+    return [self.eventKitDataSource weekView:weekView eventsForDate:startDate];
+}
+
+#else
 
 static int counter = 7 * 5;
 
@@ -90,6 +103,7 @@ static int counter = 7 * 5;
 	return arr;
 }
 
+#endif
 
 - (MAEvent *)event {
 	static int counter;
@@ -104,6 +118,13 @@ static int counter = 7 * 5;
 	event.allDay = NO;
 	event.userInfo = dict;
 	return event;
+}
+
+- (MAEventKitDataSource *)eventKitDataSource {
+    if (!_eventKitDataSource) {
+        _eventKitDataSource = [[MAEventKitDataSource alloc] init];
+    }
+    return _eventKitDataSource;
 }
 
 /* Implementation for the MAWeekViewDelegate protocol */
