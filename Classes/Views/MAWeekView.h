@@ -29,7 +29,7 @@
 
 @class MAGridView;
 @class MAHourView;
-@class MAWeekdayView;
+@class MAWeekdayBarView;
 @class MAEventGridView;
 @class MAEvent;
 
@@ -44,7 +44,7 @@
 	UIScrollView *_scrollView;
 	MAGridView *_gridView;
 	MAHourView *_hourView;
-	MAWeekdayView *_weekdayView;
+	MAWeekdayBarView *_weekdayBarView;
 	
 	unsigned int _labelFontSize;
 	UIFont *_regularFont;

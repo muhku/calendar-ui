@@ -93,7 +93,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 @end
 
-@interface MAWeekdayView : UIView {
+@interface MAWeekdayBarView : UIView {
 	MAWeekView *_weekView;
 	NSDate *_week;
 	UIColor *_textColor, *_sundayColor, *_todayColor;
@@ -149,7 +149,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 @property (readonly) UIFont *regularFont;
 @property (readonly) UIFont *boldFont;
 @property (readonly) MAHourView *hourView;
-@property (readonly) MAWeekdayView *weekdayView;
+@property (readonly) MAWeekdayBarView *weekdayBarView;
 @property (readonly) MAEventGridView *allDayEventView;
 @property (readonly) UISwipeGestureRecognizer *swipeLeftRecognizer;
 @property (readonly) UISwipeGestureRecognizer *swipeRightRecognizer;
@@ -185,7 +185,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	[self addSubview:self.leftArrow];
 	[self addSubview:self.rightArrow];
 	[self addSubview:self.dateLabel];
-	[self addSubview:self.weekdayView];
+	[self addSubview:self.weekdayBarView];
 	
 	[self addSubview:self.scrollView];
 	
@@ -236,11 +236,11 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	
 	[self.hourView setNeedsDisplay];
 	
-	self.weekdayView.frame = CGRectMake(CGRectGetMaxX(self.hourView.bounds),
+	self.weekdayBarView.frame = CGRectMake(CGRectGetMaxX(self.hourView.bounds),
 										CGRectGetMaxY(self.topBackground.bounds) - sizeNecessaryBold.height, 
 										CGRectGetWidth(self.topBackground.bounds) - CGRectGetWidth(self.hourView.bounds),
 										sizeNecessaryBold.height);
-	[self.weekdayView setNeedsDisplay];
+	[self.weekdayBarView setNeedsDisplay];
 	
 	self.scrollView.frame = CGRectMake(CGRectGetMinX(self.bounds),
 									   CGRectGetMaxY(self.topBackground.bounds),
@@ -327,17 +327,17 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	return _hourView;
 }
 
-- (MAWeekdayView *)weekdayView {
-	if (!_weekdayView) {
-		_weekdayView = [[MAWeekdayView alloc] init];
-		_weekdayView.weekView        = self;
-		_weekdayView.backgroundColor = [UIColor clearColor];
-		_weekdayView.textColor       = [UIColor blackColor];
-		_weekdayView.sundayColor     = [UIColor colorWithRed:0.6 green:0 blue:0 alpha:1.f];
-		_weekdayView.todayColor      = [UIColor colorWithRed:0.1 green:0.5 blue:0.9 alpha:1.f];
-		_weekdayView.textFont        = self.regularFont;
+- (MAWeekdayBarView *)weekdayBarView {
+	if (!_weekdayBarView) {
+		_weekdayBarView = [[MAWeekdayBarView alloc] init];
+		_weekdayBarView.weekView        = self;
+		_weekdayBarView.backgroundColor = [UIColor clearColor];
+		_weekdayBarView.textColor       = [UIColor blackColor];
+		_weekdayBarView.sundayColor     = [UIColor colorWithRed:0.6 green:0 blue:0 alpha:1.f];
+		_weekdayBarView.todayColor      = [UIColor colorWithRed:0.1 green:0.5 blue:0.9 alpha:1.f];
+		_weekdayBarView.textFont        = self.regularFont;
 	}
-	return _weekdayView;
+	return _weekdayBarView;
 }
 
 - (MAGridView *)gridView {
@@ -397,8 +397,8 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 - (void)setWeek:(NSDate *)date {
 	NSDate *firstOfWeek = [self firstDayOfWeekFromDate:date];
 	_week = firstOfWeek;
-	self.weekdayView.week = _week;
-	[self.weekdayView setNeedsDisplay];
+	self.weekdayBarView.week = _week;
+	[self.weekdayBarView setNeedsDisplay];
 	
 	self.allDayEventView.week = _week;
 	 
@@ -432,7 +432,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	[self.allDayEventView resetCachedData];
 	
 	size_t d = 0;
-	for (NSDate *weekday in self.weekdayView.weekdays) {
+	for (NSDate *weekday in self.weekdayBarView.weekdays) {
 		NSArray *events = [self.dataSource weekView:self eventsForDate:weekday];
 		
 		for (id e in events) {
@@ -600,7 +600,7 @@ static NSString const * const HOURS_24[] = {
 
 @end
 
-@implementation MAWeekdayView
+@implementation MAWeekdayBarView
 
 @synthesize weekView=_weekView;
 @synthesize textColor=_textColor, sundayColor=_sundayColor, todayColor=_todayColor;
@@ -905,7 +905,7 @@ static const CGFloat kCorner       = 5.0;
 		/* Calculate the new time for the event */
 		
 		const int eventDurationInMinutes = [self.event durationInMinutes];
-		NSDate *weekday = [self.weekView.weekdayView.weekdays objectAtIndex:(int)round(posX)];
+		NSDate *weekday = [self.weekView.weekdayBarView.weekdays objectAtIndex:(int)round(posX)];
 		double hours;
 		double minutes;
 		minutes = modf(posY, &hours) * 60;
