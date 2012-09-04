@@ -30,7 +30,7 @@
 @class MAGridView;
 @class MAHourView;
 @class MAWeekdayBarView;
-@class MAEventGridView;
+@class MAAllDayEventView;
 @class MAEvent;
 
 @protocol MAWeekViewDataSource, MAWeekViewDelegate;
@@ -40,7 +40,7 @@
 	UIButton *_leftArrow, *_rightArrow;
 	UILabel *_dateLabel;
 	
-	MAEventGridView *_allDayEventView;
+	MAAllDayEventView *_allDayEventView;
 	UIScrollView *_scrollView;
 	MAGridView *_gridView;
 	MAHourView *_hourView;

@@ -111,7 +111,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 
 @end
 
-@interface MAEventGridView : UIView {
+@interface MAAllDayEventView : UIView {
 	MAWeekView *_weekView;
 	int _eventsInOffset[7];
 	unsigned int _maxEvents;
@@ -150,7 +150,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 @property (readonly) UIFont *boldFont;
 @property (readonly) MAHourView *hourView;
 @property (readonly) MAWeekdayBarView *weekdayBarView;
-@property (readonly) MAEventGridView *allDayEventView;
+@property (readonly) MAAllDayEventView *allDayEventView;
 @property (readonly) UISwipeGestureRecognizer *swipeLeftRecognizer;
 @property (readonly) UISwipeGestureRecognizer *swipeRightRecognizer;
 @property (readonly) NSString *titleText;
@@ -306,9 +306,9 @@ static const unsigned int TOP_BACKGROUND_HEIGHT               = 35;
 	return _scrollView;
 }
 
-- (MAEventGridView *)allDayEventView {
+- (MAAllDayEventView *)allDayEventView {
 	if (!_allDayEventView) {
-		_allDayEventView = [[MAEventGridView alloc] init];
+		_allDayEventView = [[MAAllDayEventView alloc] init];
 		_allDayEventView.backgroundColor = [UIColor whiteColor];
 		_allDayEventView.weekView = self;
 		_allDayEventView.textFont = self.regularFont;
@@ -681,7 +681,7 @@ static NSString const * const HOURS_24[] = {
 
 @end
 
-@implementation MAEventGridView
+@implementation MAAllDayEventView
 
 @synthesize weekView=_weekView;
 @synthesize textFont=_textFont;
