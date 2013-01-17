@@ -53,7 +53,7 @@
 	
 	UISwipeGestureRecognizer *_swipeLeftRecognizer, *_swipeRightRecognizer;
 	
-	id<MADayViewDataSource> _dataSource;
+	id<MADayViewDataSource> __unsafe_unretained _dataSource;
 	id<MADayViewDelegate> __unsafe_unretained _delegate;
 }
 
