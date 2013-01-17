@@ -53,7 +53,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	NSString *_title;
 	UIColor *_textColor;
 	UIFont *_textFont;
-	MADayView *_dayView;
+	__unsafe_unretained MADayView *_dayView;
 	MAEvent *_event;
 	CGRect _textRect;
 }
@@ -63,13 +63,13 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong) UIFont *textFont;
-@property (nonatomic, strong) MADayView *dayView;
+@property (nonatomic, unsafe_unretained) MADayView *dayView;
 @property (nonatomic, strong) MAEvent *event;
 
 @end
 
 @interface MA_AllDayGridView : UIView {
-	MADayView *_dayView;
+	__unsafe_unretained MADayView *_dayView;
 	unsigned int _eventCount;
 	NSDate *_day;
 	CGFloat _eventHeight;
@@ -77,7 +77,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 @property (nonatomic, assign) CGFloat eventHeight;
-@property (nonatomic, strong) MADayView *dayView;
+@property (nonatomic, unsafe_unretained) MADayView *dayView;
 @property (nonatomic, strong) UIFont *textFont;
 @property (nonatomic,copy) NSDate *day;
 @property (readonly) BOOL hasAllDayEvents;
@@ -90,7 +90,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 @interface MADayGridView : UIView {
 	UIColor *_textColor;
 	UIFont *_textFont;
-	MADayView *_dayView;
+	__unsafe_unretained MADayView *_dayView;
 	CGFloat _lineX;
 	CGFloat _lineY[25], _dashedLineY[25];
 	CGRect _textRect[25];
@@ -99,7 +99,7 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 - (BOOL)timeIs24HourFormat;
 - (void)addEvent:(MAEvent *)event;
 
-@property (nonatomic, strong) MADayView *dayView;
+@property (nonatomic, unsafe_unretained) MADayView *dayView;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong) UIFont *textFont;
 @property (readonly) CGFloat lineX;
