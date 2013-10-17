@@ -10,7 +10,7 @@ The current version includes the following views:
 MAWeekView
 ---------------------
 
-![](http://muhonen.net/project/CalendarUI/weekview.png)
+![](https://raw.github.com/muhku/calendar-ui/master/Extra/weekview.png)
 
 A weekly view for viewing events, displays a whole week. Navigation using the arrows on
 the top of the view or using the swipe gesture. It has two delegates: MAWeekViewDataSource and
@@ -48,7 +48,7 @@ MADayView
 MADayView is a daily view for displaying events. Please see the MADayViewDataSource and
 MADayViewDelegate protocols for further details.
 
-![](http://muhonen.net/project/CalendarUI/dayview.png)
+![](https://raw.github.com/muhku/calendar-ui/master/Extra/dayview.png)
 
 Using the classes in your own project
 ====================
@@ -57,7 +57,7 @@ Just copy Classes/Views/* and Resources/Images/* to your own project.
 
 The overall class dependencies look like this:
 
-![](http://muhonen.net/project/CalendarUI/classes.png)
+![](https://raw.github.com/muhku/calendar-ui/master/Extra/classes.png)
 
 Reporting bugs and contributing
 ====================
@@ -67,19 +67,12 @@ a patch and make sure it can be merged to the master branch without conflicts.
 
 If you have anything to ask, you can use email.
 
-Donate
-====================
-
-I have a [PayPal donation page](http://muhonen.net/donate/) if you want to support the development of the project.
-
-[![](http://muhonen.net/donate/d.gif)](http://muhonen.net/donate/)
-
 License
 ====================
 
 The BSD license which the files are licensed under allows is as follows:
 
-    Copyright (c) 2010-2012 Matias Muhonen <mmu@iki.fi>
+    Copyright (c) 2010-2013 Matias Muhonen <mmu@iki.fi>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
