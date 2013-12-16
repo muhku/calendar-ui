@@ -64,6 +64,7 @@
 @property (nonatomic,unsafe_unretained) IBOutlet id<MADayViewDelegate> delegate;
 
 - (void)reloadData;
+- (void)limitDaysToFirstDate:(NSDate *)firstDate lastDate:(NSDate*)lastDate;
 
 @end
 
