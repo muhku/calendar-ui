@@ -106,6 +106,13 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 
 @end
 
+@interface MADayView()
+
+@property (strong) NSDate *firstDate;
+@property (strong) NSDate *lastDate;
+
+@end
+
 @interface MADayView (PrivateMethods)
 - (void)setupCustomInitialisation;
 - (void)changeDay:(UIButton *)sender;
@@ -132,6 +139,9 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 @synthesize autoScrollToFirstEvent=_autoScrollToFirstEvent;
 @synthesize labelFontSize=_labelFontSize;
 @synthesize delegate=_delegate;
+@synthesize firstDate=_firstDate;
+@synthesize lastDate=_lastDate;
+
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -170,13 +180,13 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 										  CGRectGetMinY(self.bounds),
 										  CGRectGetWidth(self.bounds), TOP_BACKGROUND_HEIGHT + 10);
 	self.leftArrow.frame = CGRectMake(CGRectGetMinX(self.topBackground.bounds),
-									  (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
+									  (int) ((CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2) + 6,
 									  ARROW_WIDTH, ARROW_HEIGHT);
 	self.rightArrow.frame = CGRectMake(CGRectGetWidth(self.topBackground.bounds) - ARROW_WIDTH,
-									   (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
+									   (int) ((CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2) + 6,
 									   ARROW_WIDTH, ARROW_HEIGHT);
 	self.dateLabel.frame = CGRectMake(CGRectGetMaxX(self.leftArrow.bounds),
-									  (int) (CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2,
+									  (int) ((CGRectGetHeight(self.topBackground.bounds) - ARROW_HEIGHT) / 2) + 6,
 									  CGRectGetWidth(self.topBackground.bounds) - CGRectGetWidth(self.leftArrow.bounds) - CGRectGetWidth(self.rightArrow.bounds),
 									  ARROW_HEIGHT);
 	
@@ -308,6 +318,19 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 }
 
 - (void)setDay:(NSDate *)date {
+	if (self.firstDate) {
+		self.leftArrow.hidden = [[self.firstDate earlierDate: date] isEqualToDate:date];
+		if ([[self.firstDate earlierDate:date] isEqualToDate:date]) {
+			date = [self.firstDate copy];
+		}
+	}
+	if (self.lastDate) {
+		self.rightArrow.hidden = [[self.lastDate laterDate:date] isEqualToDate:date];
+		if ([[self.lastDate laterDate:date] isEqualToDate:date]) {
+			date = [self.lastDate copy];
+		}
+	}
+	
 	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:date];
 	[components setHour:0];
 	[components setMinute:0];
@@ -357,6 +380,22 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 			[self.gridView addEvent:event];
 		}
 	}
+}
+
+- (void)limitDaysToFirstDate:(NSDate *)firstDate lastDate:(NSDate*)lastDate {
+	NSDateComponents *components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:firstDate];
+	[components setHour:0];
+	[components setMinute:0];
+	[components setSecond:0];
+	self.firstDate = [CURRENT_CALENDAR dateFromComponents:components];
+
+	components = [CURRENT_CALENDAR components:DATE_COMPONENTS fromDate:lastDate];
+	[components setHour:0];
+	[components setMinute:0];
+	[components setSecond:0];
+	self.lastDate = [CURRENT_CALENDAR dateFromComponents:components];
+	
+	self.day = self.firstDate;
 }
 
 - (void)changeDay:(UIButton *)sender {
@@ -636,9 +675,10 @@ static NSString const * const HOURS_24[] = {
 	
 	NSArray *subviews = self.subviews;
 	int max = [subviews count];
-	MADayEventView *curEv = nil, *prevEv = nil, *firstEvent = nil;
+	MADayEventView *curEv = nil, *prevEv = nil, *nextEv = nil, *firstEvent = nil;
 	const CGFloat spacePerMinute = (_lineY[1] - _lineY[0]) / 60.f;
 	
+	// set initial view positions
 	for (i=0; i < max; i++) {
 		if (![NSStringFromClass([[subviews objectAtIndex:i] class])isEqualToString:@"MADayEventView"]) {
 			continue;
@@ -646,34 +686,68 @@ static NSString const * const HOURS_24[] = {
 		
 		prevEv = curEv;
 		curEv = [subviews objectAtIndex:i];
-						
+		
 		curEv.frame = CGRectMake((int) _lineX,
 								 (int) (spacePerMinute * [curEv.event minutesSinceMidnight] + _lineY[0]),
 								 (int) (self.bounds.size.width - _lineX),
 								 (int) (spacePerMinute * [curEv.event durationInMinutes]));
-		
-		/*
-		 * Layout intersecting events to two columns.
-		 */
-		if (CGRectIntersectsRect(curEv.frame, prevEv.frame))
-		{
-			prevEv.frame = CGRectMake((int) (prevEv.frame.origin.x),
-									  (int) (prevEv.frame.origin.y),
-									  (int) (prevEv.frame.size.width / 2.f),
-									  (int) (prevEv.frame.size.height));
-				
-			curEv.frame = CGRectMake((int) (curEv.frame.origin.x + (curEv.frame.size.width / 2.f)),
-									 (int) (curEv.frame.origin.y),
-									 (int) (curEv.frame.size.width / 2.f),
-									 (int) (curEv.frame.size.height));
-		}
 		
 		[curEv setNeedsDisplay];
 		
 		if (!firstEvent || curEv.frame.origin.y < firstEvent.frame.origin.y) {
 			firstEvent = curEv;
 		}
+
 	}
+	
+	curEv = nil;
+	BOOL shrinkCurEv = NO;
+	// check for overlaps and compensate
+	for (i=0; i < max; i++) {
+		if (![NSStringFromClass([[subviews objectAtIndex:i] class])isEqualToString:@"MADayEventView"]) {
+			continue;
+		}
+		prevEv = curEv;
+		curEv = [subviews objectAtIndex:i];
+		
+		for (int j=i+1; j < max; j++) {
+			if (![NSStringFromClass([[subviews objectAtIndex:j] class])isEqualToString:@"MADayEventView"]) {
+				continue;
+			}
+			nextEv = [subviews objectAtIndex:j];
+			
+			/*
+			 * Layout intersecting events to two columns.
+			 */
+			
+			if (CGRectIntersectsRect(curEv.frame, nextEv.frame))
+			{
+				if (curEv.frame.origin.x == nextEv.frame.origin.x) {
+					shrinkCurEv = YES;
+				}
+				
+				
+				nextEv.frame = CGRectMake((int) (nextEv.frame.origin.x + ((curEv.frame.origin.x == _lineX || curEv.frame.origin.x == nextEv.frame.origin.x) ? (nextEv.frame.size.width / 2.f) : 0)),
+										  (int) (nextEv.frame.origin.y),
+										  (int) (nextEv.frame.size.width / 2.f),
+										  (int) (nextEv.frame.size.height));
+				
+				
+				[nextEv setNeedsDisplay];
+			}
+		}
+		
+		if (shrinkCurEv) {
+			shrinkCurEv = NO;
+			curEv.frame = CGRectMake((int) (curEv.frame.origin.x),
+									 (int) (curEv.frame.origin.y),
+									 (int) (curEv.frame.size.width / 2.f),
+									 (int) (curEv.frame.size.height));
+
+			[curEv setNeedsDisplay];
+		}
+	}
+	
 	
 	if (self.dayView.autoScrollToFirstEvent) {
 		CGPoint autoScrollPoint;
