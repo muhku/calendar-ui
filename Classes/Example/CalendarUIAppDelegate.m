@@ -42,7 +42,7 @@
     // Override point for customization after application launch.
 
     // Add the tab bar controller's view to the window and display.
-    [window addSubview:tabBarController.view];
+    [window setRootViewController:tabBarController];
     [window makeKeyAndVisible];
 
     return YES;
