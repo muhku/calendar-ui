@@ -32,7 +32,6 @@
 #import "TapDetectingView.h"      /* TapDetectingView */
 
 static const unsigned int HOURS_IN_DAY                   = 25; // Beginning and end of day is include twice
-static const unsigned int MINUTES_IN_HOUR                = 60;
 static const unsigned int SPACE_BETWEEN_HOUR_LABELS      = 3;
 static const unsigned int DEFAULT_LABEL_FONT_SIZE        = 12;
 static const unsigned int ALL_DAY_VIEW_EMPTY_SPACE       = 3;
