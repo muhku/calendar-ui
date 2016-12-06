@@ -339,6 +339,10 @@ static const unsigned int TOP_BACKGROUND_HEIGHT          = 35;
 	self.allDayGridView.day = _day;
 	self.dateLabel.text = [self titleText];
 	
+    if ([self.delegate respondsToSelector:@selector(selectedDate:)]) {
+        [self.delegate selectedDate:date];
+    }
+    
 	[self reloadData];
 }
 

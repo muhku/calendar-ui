@@ -75,8 +75,11 @@
 @end
 
 @protocol MADayViewDelegate <NSObject>
-
+    
 @optional
 - (void)dayView:(MADayView *)dayView eventTapped:(MAEvent *)event;
+    
+@optional
+- (void)selectedDate:(NSDate*) day;
 
 @end
